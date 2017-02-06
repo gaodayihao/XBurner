@@ -4,6 +4,7 @@
 	<Script file="talent.lua" />
 	<Script file="buff.lua" />
 	<Script file="artifact.lua" />
+	<Script file="spell.lua" />
 	<Script file="cast.lua" />
 
 </Ui>

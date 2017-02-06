@@ -195,3 +195,7 @@ end
 function XB.Abilities:GetDebuffsTable(classIndex,spec)
     return GetAbilityTable('debuffs', classIndex, spec)
 end
+
+function XB.Abilities:GetTalentsTable(classIndex,spec)
+    return GetAbilityTable('talents', classIndex, spec)
+end

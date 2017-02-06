@@ -5,10 +5,11 @@ local GetSpecialization         = GetSpecialization
 local GetSpecializationInfo     = GetSpecializationInfo
 local GetTime                   = GetTime
 local UnitClass                 = UnitClass
+local activeSpec			    = 0
 
 local function BuildBuffAndDebuff()
     local classIndex = select(3,UnitClass('player'))
-    local spec = GetSpecializationInfo(GetSpecialization())
+    local spec = activeSpec
     local buffs = XB.Abilities:GetBuffsTable(classIndex,spec)
 
     wipe(XB.Game.Buff)
@@ -56,10 +57,12 @@ local function BuildBuffAndDebuff()
 end
 
 XB.Listener:Add('XB_Buff','PLAYER_LOGIN', function ()
+	activeSpec = GetSpecializationInfo(GetSpecialization())
 	BuildBuffAndDebuff()
 end)
 
 XB.Listener:Add('XB_Buff','PLAYER_SPECIALIZATION_CHANGED', function (unitID)
-    if unitID ~= 'player' then return end
+    if unitID ~= 'player' or activeSpec == GetSpecializationInfo(GetSpecialization()) then return end
+	activeSpec = GetSpecializationInfo(GetSpecialization())
 	BuildBuffAndDebuff()
 end)

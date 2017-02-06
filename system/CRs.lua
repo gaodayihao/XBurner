@@ -6,6 +6,7 @@ local UnitClass             = UnitClass
 local GetSpecialization     = GetSpecialization
 local GetSpecializationInfo = GetSpecializationInfo
 local noop                  = function() end
+local activeSpec			= 0
 
 function XB.CR:AddGUI(key, eval)
 	local temp = {
@@ -106,7 +107,7 @@ local function BuildCRs(Spec, Last)
 end
 
 local function SetCR()
-	local Spec = GetSpecializationInfo(GetSpecialization())
+	local Spec = activeSpec
 	local englishClass  = select(2, UnitClass('player'))
 	local a, b = englishClass:sub(1, 1):upper(), englishClass:sub(2):lower()
 	local classCR = '[XB] '..a..b..' - Basic'
@@ -116,11 +117,13 @@ local function SetCR()
 end
 
 XB.Listener:Add("XB_CR", "PLAYER_LOGIN", function()
+	activeSpec = GetSpecializationInfo(GetSpecialization())
 	SetCR()
 end)
 
 XB.Listener:Add("XB_CR", "PLAYER_SPECIALIZATION_CHANGED", function(unitID)
-	if unitID ~= 'player' then return end
+	if unitID ~= 'player' or activeSpec == GetSpecializationInfo(GetSpecialization()) then return end
+	activeSpec = GetSpecializationInfo(GetSpecialization())
 	XB.Interface:ResetCRs()
 	SetCR()
 end)
