@@ -1,0 +1,56 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+	<!-- Basic Rotations -->
+	<Script file="warrior\warrior.lua" />
+	<Script file="paladin\paladin.lua" />
+	<Script file="hunter\hunter.lua" />
+	<Script file="rogue\rogue.lua" />
+	<Script file="priest\priest.lua" />
+	<Script file="deathknight\deathknight.lua" />
+	<Script file="shaman\shaman.lua" />
+	<Script file="mage\mage.lua" />
+	<Script file="warlock\warlock.lua" />
+	<Script file="monk\monk.lua" />
+	<Script file="druid\druid.lua" />
+	<Script file="demonhunter\demonhunter.lua" />
+
+	<!-- Rotations -->
+	<Script file="paladin\retribution.lua" />
+	<Script file="paladin\protection.lua" />
+	<Script file="paladin\holy.lua" />
+	<Script file="druid\resto.lua" />
+	<Script file="druid\guard.lua" />
+	<Script file="druid\feral.lua" />
+	<Script file="druid\balance.lua" />
+	<Script file="deathknight\blood.lua" />
+	<Script file="deathknight\frost.lua" />
+	<Script file="deathknight\unholy.lua" />
+	<Script file="monk\windwalker.lua" />
+	<Script file="monk\mistweaver.lua" />
+	<Script file="monk\brewmaster.lua" />
+	<Script file="warrior\fury.lua" />
+	<Script file="warrior\protection.lua" />
+	<Script file="warrior\arms.lua" />
+	<Script file="priest\discipline.lua" />
+	<Script file="priest\shadow.lua" />
+	<Script file="priest\holy.lua" />
+	<Script file="warlock\destro.lua" />
+	<Script file="warlock\affliction.lua" />
+	<Script file="warlock\demonology.lua" />
+	<Script file="hunter\bm.lua" />
+	<Script file="hunter\mm.lua" />
+	<Script file="hunter\survival.lua" />
+	<Script file="mage\arcane.lua" />
+	<Script file="mage\frost.lua" />
+	<Script file="mage\fire.lua" />
+	<Script file="shaman\restoration.lua" />
+	<Script file="shaman\elemental.lua" />
+	<Script file="shaman\enhancement.lua" />
+	<Script file="rogue\subtlety.lua" />
+	<Script file="rogue\assassination.lua" />
+	<Script file="rogue\outlaw.lua" />
+	<Script file="demonhunter\vengeance.lua" />
+	<Script file="demonhunter\havoc.lua" />
+	
+</Ui>

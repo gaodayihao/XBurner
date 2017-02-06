@@ -1,0 +1,10 @@
+## Title: |r|cff0070deXBurner|rCore
+## Title-zhTW: |r|cff0070deXBurner|r核心
+## Title-zhCN: |r|cff0070deXBurner|r核心
+## Notes: X Burner.
+## Interface: 70100
+## X-Min-Interface: 70100
+## Author: Ellis
+## SavedVariablesPerCharacter: XBDATA
+
+files.xml
