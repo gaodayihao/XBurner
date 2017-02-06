@@ -59,6 +59,7 @@ XB.Listener:Add('XB_Buff','PLAYER_LOGIN', function ()
 	BuildBuffAndDebuff()
 end)
 
-XB.Listener:Add('XB_Buff','PLAYER_SPECIALIZATION_CHANGED', function ()
+XB.Listener:Add('XB_Buff','PLAYER_SPECIALIZATION_CHANGED', function (unitID)
+    if unitID ~= 'player' then return end
 	BuildBuffAndDebuff()
 end)
