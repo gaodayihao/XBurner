@@ -20,8 +20,8 @@ menuFrame:Hide()
 
 local DropMenu = {
 	{text = logo..'['..n_name..' |rv'..XB.Version..']', isTitle = 1, notCheckable = 1},
-	{text = L:TA('mainframe', 'CRS'), hasArrow = true, menuList = {}},
-	{text = L:TA('mainframe', 'CRS_ST'), hasArrow = true, menuList = {}}
+	{text = L:TA('mainframe', 'CRS'), hasArrow = true, menuList = {}, notCheckable = 1},
+	{text = L:TA('mainframe', 'CRS_ST'), hasArrow = true, menuList = {}, notCheckable = 1}
 }
 
 function XB.Interface:ResetCRs()

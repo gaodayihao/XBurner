@@ -5,7 +5,7 @@ local GetSpecialization         = GetSpecialization
 local GetSpecializationInfo     = GetSpecializationInfo
 local GetTime                   = GetTime
 local UnitClass                 = UnitClass
-local activeSpec			    = 0
+local activeSpec                = 0
 
 local function BuildBuffAndDebuff()
     local classIndex = select(3,UnitClass('player'))
@@ -57,12 +57,12 @@ local function BuildBuffAndDebuff()
 end
 
 XB.Listener:Add('XB_Buff','PLAYER_LOGIN', function ()
-	activeSpec = GetSpecializationInfo(GetSpecialization())
-	BuildBuffAndDebuff()
+    activeSpec = GetSpecializationInfo(GetSpecialization())
+    BuildBuffAndDebuff()
 end)
 
 XB.Listener:Add('XB_Buff','PLAYER_SPECIALIZATION_CHANGED', function (unitID)
     if unitID ~= 'player' or activeSpec == GetSpecializationInfo(GetSpecialization()) then return end
-	activeSpec = GetSpecializationInfo(GetSpecialization())
-	BuildBuffAndDebuff()
+    activeSpec = GetSpecializationInfo(GetSpecialization())
+    BuildBuffAndDebuff()
 end)
