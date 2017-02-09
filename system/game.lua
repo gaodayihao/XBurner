@@ -1,9 +1,11 @@
 local _, XB                   = ...
 XB.Game                       = {}
+XB.Player                     = {}
 local UnitBuff                = UnitBuff
 local UnitDebuff              = UnitDebuff
 local UnitExists              = ObjectExists or UnitExists
 local GetSpellInfo            = GetSpellInfo
+local UnitPower               = UnitPower
 
 local function UnitBuffL(target, spellID, own)
     if target == nil or not UnitExists(target) then return nil end
@@ -35,4 +37,18 @@ function XB.Game:UnitDebuff(target,spellID)
     return UnitDebuffL(target, spellID, true)
 end
 
+function XB.Game:UnitPower(target,powerType)
+    local target = target or 'player'
+    local powerType = powerType or UnitPowerType(target)
+    local amount,max,deficit,percent = 0,0,0,0
+
+    amount = UnitPower(target,powerType)
+    max = UnitPowerMax(target,powerType)
+    deficit = max - amount
+    percent = (amount/max)*100
+
+    return amount,max,deficit,percent
+end
+
 XB.Globals.Game = XB.Game
+XB.Globals.Player = XB.Player

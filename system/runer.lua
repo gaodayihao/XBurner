@@ -28,7 +28,7 @@ XB.Core:WhenInGame(function()
 
 C_Timer.NewTicker(0.1, (function()
 	XB.Faceroll:Hide()
-	if XB.Interface:GetToggle('mastertoggle') then
+	if XB.Interface:GetToggle('mastertoggle') and not XB.CR.CRChanging then
 		if not UnitIsDeadOrGhost('player') and IsMountedCheck() then
 			if XB.Queuer:Execute() then return end
 			local exe = XB.CR.CR[InCombatLockdown()]

@@ -67,7 +67,7 @@ local function RefreshGUI()
 	local offset = -5
 	recycleStatusBars()
 	for _, Obj in pairs(XB.OM:Get(dOM, true)) do
-		local Health = math.floor(((UnitHealth(Obj.key) or 1) / (UnitHealthMax(Obj.key) or 1)) * 100)
+		local Health = ((UnitHealth(Obj.key) or 1) / (UnitHealthMax(Obj.key) or 1) * 100)
 		local statusBar = getStatusBar()
 		local distance = XB.Core:Round(Obj.distance or 0)
 		statusBar.frame:SetPoint('TOP', ListWindow.content, 'TOP', 2, offset )

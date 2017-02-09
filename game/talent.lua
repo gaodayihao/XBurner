@@ -1,5 +1,5 @@
 local _, XB                     = ...
-XB.Game.Talent                  = {}
+XB.Player.Talent                  = {}
 local GetSpecialization         = GetSpecialization
 local GetSpecializationInfo     = GetSpecializationInfo
 local UnitClass                 = UnitClass
@@ -19,17 +19,15 @@ local function BuildTalent()
             table.insert(tempTalents,talentID,selected)
         end
     end
-    wipe(XB.Game.Talent)
+    wipe(XB.Player.Talent)
     for name, spellID in pairs(talents) do
-        XB.Game.Talent[name] = {
+        XB.Player.Talent[name] = {
             enable = not not tempTalents[spellID]
         }
     end
 end
 
-XB.Listener:Add('XB_Talent','PLAYER_LOGIN', function ()
-    BuildTalent()
-end)
+XB.Core:WhenInGame(BuildTalent)
 
 XB.Listener:Add('XB_Talent','PLAYER_TALENT_UPDATE', function()
     BuildTalent()

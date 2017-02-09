@@ -169,6 +169,25 @@ XB.Abilities = {
         talents                         = {
 
         },
+    },
+    PowerList     = {
+        Mana            = SPELL_POWER_MANA,
+        Rage            = SPELL_POWER_RAGE,
+        Focus           = SPELL_POWER_FOCUS,
+        Energy          = SPELL_POWER_ENERGY,
+        ComboPoints     = SPELL_POWER_COMBO_POINTS,
+        Runes           = SPELL_POWER_RUNES,
+        RunicPower      = SPELL_POWER_RUNIC_POWER,
+        SoulShards      = SPELL_POWER_SOUL_SHARDS,
+        LunarPower      = SPELL_POWER_LUNAR_POWER,
+        HolyPower       = SPELL_POWER_HOLY_POWER,
+        AltPower        = SPELL_POWER_ALTERNATE_POWER,
+        Maelstrom       = SPELL_POWER_MAELSTROM,
+        Chi             = SPELL_POWER_CHI,
+        Insanity        = SPELL_POWER_INSANITY,
+        ArcaneCharges   = SPELL_POWER_ARCANE_CHARGES,
+        Fury            = SPELL_POWER_FURY,
+        Pain            = SPELL_POWER_PAIN,
     }
 }
 

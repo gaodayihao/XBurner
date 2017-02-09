@@ -1,5 +1,5 @@
 local _, XB                     = ...
-XB.Game.Artifact                = {}
+XB.Player.Artifact                = {}
 local UnitClass                 = UnitClass
 local GetSpecializationInfo     = GetSpecializationInfo
 local GetSpecialization         = GetSpecialization
@@ -24,12 +24,12 @@ local function BuildArtifact()
 	local spec = GetSpecializationInfo(GetSpecialization())
     local artifacts = XB.Abilities:GetArtifactsTable(classIndex,spec)
 
-    wipe(XB.Game.Artifact)
+    wipe(XB.Player.Artifact)
     local artifactId = select(1,GetEquippedArtifactInfo())
     local _, data = LAD:GetArtifactInfo(artifactId)
     for name, spellID in pairs(artifacts) do
         local hasPerk,perkRank = getPerk(spellID, data)
-        XB.Game.Artifact[name] = {
+        XB.Player.Artifact[name] = {
             enable = hasPerk, 
             rank = perkRank
         }

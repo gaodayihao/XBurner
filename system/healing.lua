@@ -33,11 +33,11 @@ local function GetPredictedHealth(unit)
 end
 
 local function GetPredictedHealth_Percent(unit)
-    return math.floor((GetPredictedHealth(unit)/UnitHealthMax(unit))*100)
+    return (GetPredictedHealth(unit)/UnitHealthMax(unit))*100
 end
 
 local function healthPercent(unit)
-    return math.floor((UnitHealth(unit)/UnitHealthMax(unit))*100)
+    return (UnitHealth(unit)/UnitHealthMax(unit))*100
 end
 
 -- This Add's more index to the Obj in the OM table
