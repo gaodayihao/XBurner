@@ -96,11 +96,10 @@ XB.Abilities = {
                 PowerWordShield             = 17,
                 Shadowform                  = 232698,
                 ShadowyInsight              = 124430,
-                ShadowyInsight              = 124430,
                 SurrenderedSoul             = 212570,
                 SurrenderToMadness          = 193223,
                 TwistOfFate                 = 123254,
-                VoidForm                    = 194249,
+                Voidform                    = 194249,
                 VoidTorrent                 = 205065,
             },
             debuffs                         = {
@@ -170,7 +169,7 @@ XB.Abilities = {
 
         },
     },
-    PowerList     = {
+    PowerList           = {
         Mana            = SPELL_POWER_MANA,
         Rage            = SPELL_POWER_RAGE,
         Focus           = SPELL_POWER_FOCUS,
@@ -217,4 +216,18 @@ end
 
 function XB.Abilities:GetTalentsTable(classIndex,spec)
     return GetAbilityTable('talents', classIndex, spec)
+end
+
+function XB.Abilities:GetSpellsTable(classIndex,spec)
+    local spells =  GetAbilityTable('abilities', classIndex, spec)
+
+    spells = XB.Core:MergeTables(spells,XB.Abilities.Shared)
+    if XB.Abilities[classIndex] then
+        spells = XB.Core:MergeTables(spells,XB.Abilities[classIndex].Shared)
+        if XB.Abilities[classIndex][spec] then
+            spells = XB.Core:MergeTables(spells,XB.Abilities[classIndex][spec])
+        end
+    end
+
+    return spells
 end

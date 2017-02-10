@@ -21,7 +21,7 @@ local function BuildBuffAndDebuff()
                 duration = 0,
                 remains = 0,
             }
-            local name, duration, expires, caster, timeMod = XB.Game:UnitBuff(target,spellID)
+            local name, duration, expires, caster, timeMod = XB.Game:GetUnitBuff(target,spellID)
             if not not name then
                 buff.remains = math.max((expires - GetTime()) / timeMod,0)
                 buff.up = buff.remains > 0
@@ -37,17 +37,17 @@ local function BuildBuffAndDebuff()
     for name, spellID in pairs(debuffs) do
         XB.Game.Debuff[name] = function(target)
             local target = target and target or 'target'
-            local debuff = {
-                up = false,
-                down = true,
-                duration = 0,
-                remains = 0,
+            local debuff    = {
+                up          = false,
+                down        = true,
+                duration    = 0,
+                remains     = 0,
             }
-            local name, duration, expires, caster, timeMod = XB.Game:UnitDebuff(target,spellID)
+            local name, duration, expires, caster, timeMod = XB.Game:GetUnitDebuff(target,spellID)
             if not not name then
-                debuff.remains = math.max((expires - GetTime()) / timeMod,0)
-                debuff.up = debuff.remains > 0
-                debuff.down = not debuff.up
+                debuff.remains  = math.max((expires - GetTime()) / timeMod,0)
+                debuff.up       = debuff.remains > 0
+                debuff.down     = not debuff.up
                 debuff.duration = duration
             end
             return debuff

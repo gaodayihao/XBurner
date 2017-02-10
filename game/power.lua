@@ -22,7 +22,7 @@ XB.Core:WhenInGame(function()
             end
         else
             XB.Player.Power[name] = function()
-                local amount,max,deficit,percent = XB.Game:UnitPower('player',id)
+                local amount,max,deficit,percent = XB.Game:GetUnitPower('player',id)
                 return {amount = amount, max = max, deficit = deficit, percent = percent}
             end
         end

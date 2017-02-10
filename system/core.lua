@@ -3,21 +3,21 @@ XB.Core         = {}
 XB.Globals.Core = XB.Core
 
 -- Locals for speed
-local UnitExists           = ObjectExists or UnitExists
-local UnitClass            = UnitClass
-local GetSpellInfo         = GetSpellInfo
-local GetItemInfo          = GetItemInfo
-local UnitGUID             = UnitGUID
-local strsplit             = strsplit
-local GetSpellTabInfo      = GetSpellTabInfo
-local GetSpellBookItemName = GetSpellBookItemName
-local GetFlyoutInfo        = GetFlyoutInfo
-local GetNumFlyouts        = GetNumFlyouts
-local GetFlyoutID          = GetFlyoutID
-local GetFlyoutSlotInfo    = GetFlyoutSlotInfo
-local HasPetSpells         = HasPetSpells
-local BOOKTYPE_SPELL       = BOOKTYPE_SPELL
 local BOOKTYPE_PET         = BOOKTYPE_PET
+local BOOKTYPE_SPELL       = BOOKTYPE_SPELL
+local GetFlyoutID          = GetFlyoutID
+local GetFlyoutInfo        = GetFlyoutInfo
+local GetFlyoutSlotInfo    = GetFlyoutSlotInfo
+local GetItemInfo          = GetItemInfo
+local GetNumFlyouts        = GetNumFlyouts
+local GetSpellBookItemName = GetSpellBookItemName
+local GetSpellInfo         = GetSpellInfo
+local GetSpellTabInfo      = GetSpellTabInfo
+local HasPetSpells         = HasPetSpells
+local strsplit             = strsplit
+local UnitClass            = UnitClass
+local UnitExists           = ObjectExists or UnitExists
+local UnitGUID             = UnitGUID
 
 function XB.Core:Print(...)
     print('[|cff'..XB.Color..'XB|r]', ...)
