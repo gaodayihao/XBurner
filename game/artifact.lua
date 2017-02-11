@@ -7,9 +7,6 @@ local artifactListener          = {}
 local LAD                       = LibStub("LibArtifactData-1.0")
 local GetEquippedArtifactInfo   = C_ArtifactUI.GetEquippedArtifactInfo
 
-function XB.Player.Artifact:HasPerk(spellID)
-end
-
 -- checkes for perk rank
 local function getPerk(spellID, data)
     if data.traits ~= nil then
