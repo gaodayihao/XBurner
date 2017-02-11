@@ -15,18 +15,22 @@ local function BuildBuffAndDebuff()
     for name, spellID in pairs(buffs) do
         XB.Game.Buff[name] = function(target)
             local target = target and target or 'player'
-            local buff = {
-                up = false,
-                down = true,
-                duration = 0,
-                remains = 0,
+            local buff      = {
+                up          = false,
+                down        = true,
+                duration    = 0,
+                remains     = 0,
+                stack       = 0,
+                refresh     = true,
             }
-            local name, duration, expires, caster, timeMod = XB.Game:GetUnitBuff(target,spellID)
+            local name, duration, expires, caster, timeMod, stack = XB.Game:GetUnitBuff(target,spellID)
             if not not name then
-                buff.remains = math.max((expires - GetTime()) / timeMod,0)
-                buff.up = buff.remains > 0
-                buff.down = not buff.up
-                buff.duration = duration
+                buff.remains    = math.max((expires - GetTime()) / timeMod,0)
+                buff.up         = buff.remains > 0
+                buff.down       = not buff.up
+                buff.duration   = duration
+                buff.stack      = stack
+                buff.refresh    = buff.remains <= buff.duration * 0.3
             end
             return buff
         end
@@ -42,13 +46,17 @@ local function BuildBuffAndDebuff()
                 down        = true,
                 duration    = 0,
                 remains     = 0,
+                stack       = 0,
+                refresh     = true,
             }
-            local name, duration, expires, caster, timeMod = XB.Game:GetUnitDebuff(target,spellID)
+            local name, duration, expires, caster, timeMod, stack = XB.Game:GetUnitDebuff(target,spellID)
             if not not name then
                 debuff.remains  = math.max((expires - GetTime()) / timeMod,0)
                 debuff.up       = debuff.remains > 0
                 debuff.down     = not debuff.up
                 debuff.duration = duration
+                debuff.stack    = stack
+                debuff.refresh  = debuff.remains <= debuff.duration * 0.3
             end
             return debuff
         end

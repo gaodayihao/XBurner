@@ -27,8 +27,10 @@ local function BuildTalent()
     end
 end
 
-XB.Core:WhenInGame(BuildTalent)
-
-XB.Listener:Add('XB_Talent','PLAYER_TALENT_UPDATE', function()
+XB.Core:WhenInGame(function () 
     BuildTalent()
-end)
+    
+    XB.Listener:Add('XB_Talent','PLAYER_TALENT_UPDATE', function()
+        BuildTalent()
+    end)
+end,20)

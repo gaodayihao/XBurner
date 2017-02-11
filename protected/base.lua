@@ -21,12 +21,17 @@ XB.Protected.UseInvItem = function()
 end
 
 local rangeCheck = LibStub("LibRangeCheck-2.0")
-XB.Protected.Distance = function(_, b)
-  local minRange, maxRange = rangeCheck:GetRange(b)
-  return maxRange or minRange
+XB.Protected.Distance = function(Unit1, Unit2)
+  -- If Unit2 is nil we compare player to Unit1
+  if Unit2 == nil then
+      Unit2 = Unit1
+      Unit1 = "player"
+  end
+  local minRange, maxRange = rangeCheck:GetRange(Unit2)
+  return minRange and tonumber(minRange) or 999
 end
 
-XB.Protected.Infront = function(_,b)
+XB.Protected.Infront = function()
   return true
 end
 
@@ -35,8 +40,12 @@ XB.Protected.UnitCombatRange = function(_,b)
   return minRange
 end
 
-XB.Protected.LineOfSight = function(_,b)
+XB.Protected.LineOfSight = function()
   return true
+end
+
+XB.Protected.IsHackEnabled = function()
+  return false
 end
 
 local ValidUnits = {'player', 'mouseover', 'target', 'arena1', 'arena2', 'focus', 'pet'}

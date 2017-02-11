@@ -98,6 +98,9 @@ end
 
 function XB.Interface:UpdateIcon(key, icon)
 	if not icon or not Toggles[key] then return end
+	if icon and type(icon) == "number" then
+		icon = select(3,GetSpellInfo(icon))
+	end
 	Toggles[key].texture:SetTexture(icon)
 end
 

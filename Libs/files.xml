@@ -14,5 +14,6 @@
 	<Include file="DiesalGUI-1.0\DiesalGUI-1.0.xml" />
 	<Include file="DiesalMenu-1.0\DiesalMenu-1.0.xml" />
 	<Script file="LibArtifactData-1.0\LibArtifactData-1.0.lua" />
+	<Script file="LibSpellRange-1.0-1.0\LibSpellRange-1.0.lua" />
 
 </Ui>

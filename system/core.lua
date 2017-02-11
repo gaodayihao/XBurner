@@ -71,20 +71,6 @@ function XB.Core:GetItemID(item)
     return tonumber(itemID) or item
 end
 
-function XB.Core:UnitID(unit)
-    if unit and UnitExists(unit) then
-        local guid = UnitGUID(unit)
-        if guid then
-            local type, _, server_id,_,_, npc_id = strsplit("-", guid)
-            if type == "Player" then
-                return tonumber(server_id)
-            elseif npc_id then
-                return tonumber(npc_id)
-            end
-        end
-    end
-end
-
 function XB.Core:MergeTables(a, b)
 	if a == nil then a = {} end
     if type(a) == 'table' and type(b) == 'table' then

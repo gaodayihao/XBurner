@@ -76,7 +76,7 @@ C_Timer.NewTicker(0.1, (function()
         or UnitIsUnit('player', Obj.key) then
             if Roster[GUID] then
                 Refresh(GUID, Obj)
-            elseif Obj.distance <= maxDistance then
+            elseif XB.Protected.Distance(Obj) <= maxDistance then
                 Add(Obj)
             end
         end

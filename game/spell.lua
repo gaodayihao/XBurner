@@ -33,7 +33,7 @@ local function BuildSpells()
                 return result
             end
 
-            XB.Player.Spell.Cast[k] = function()
+            XB.Player.Spell.Cast[k] = function(unit,flag)
                 
             end
         end
