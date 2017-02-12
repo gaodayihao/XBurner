@@ -137,7 +137,7 @@ function XB.CombatTracker:TimeToDie(unit)
 	if DMG >= 1 and Hits > 1 then
 		ttd = UnitHealth(unit) / DMG
 	end
-	return ttd or 8675309
+	return ttd or -1
 end
 
 function XB.CombatTracker:LastCast(unit)
