@@ -211,8 +211,8 @@ function XB.Checker:ShouldStopCasting(SpellID,isChannel)
             
             if not isChannel and XB.Game:GetCastTime(SpellID) == 0 then return false end
 
-            local name, _, _, _, _, endTime, _, castID = UnitCastingInfo(boss)
-            if name ~= nil and ShouldStop[castID]~=nil then
+            local name, _, _, _, _, endTime, _, _, _, bossSpellID = UnitCastingInfo(boss)
+            if name ~= nil and ShouldStop[bossSpellID]~=nil then
                 if isChannel then
                     return XB.Game:GCD() + GetTime() + 100 > endTime
                 else
@@ -234,8 +234,8 @@ function XB.Checker:BetterStopCasting()
             for k=1,#ShouldContinue do
                 if XB.Game:GetUnitBUffAny('player',ShouldContinue[k]) then return false end
             end
-            local bossCast, _, _, _, _, bossEndTime, _, castID = UnitCastingInfo(boss)
-            if bossCast ~= nil and ShouldStop[castID]~=nil then
+            local bossCast, _, _, _, _, bossEndTime, _, _, _, bossSpellID = UnitCastingInfo(boss)
+            if bossCast ~= nil and ShouldStop[bossSpellID]~=nil then
                 return endTime >= bossEndTime
             end
         end
