@@ -1,6 +1,5 @@
 local _, XB                     = ...
 XB.Game                         = {}
-XB.Player                       = {}
 local GetSpellBookItemInfo      = GetSpellBookItemInfo
 local GetSpellCharges           = GetSpellCharges
 local GetSpellCooldown          = GetSpellCooldown
@@ -18,6 +17,8 @@ local UnitIsFriend              = UnitIsFriend
 local UnitIsUnit                = UnitIsUnit
 local UnitPower                 = UnitPower
 local UnitThreatSituation       = UnitThreatSituation
+local IsCurrentSpell            = IsCurrentSpell
+local IsSpellInRange            = IsSpellInRange
 
 local function UnitBuffL(Target, SpellID, own)
     if Target == nil or not UnitExists(Target) then return nil end
@@ -90,17 +91,20 @@ function XB.Game:GetUnitPower(Target,powerType)
 end
 
 function XB.Game:GetSpellCD(SpellID)
-	if GetSpellCooldown(SpellID) == 0 then
-		return 0
-	else
-		local Start ,CD = GetSpellCooldown(SpellID)
-		local MyCD = Start + CD - GetTime()
-		return MyCD
-	end
+    if GetSpellCooldown(SpellID) == 0 then
+        return 0
+    else
+        local Start ,CD = GetSpellCooldown(SpellID)
+        local MyCD = Start + CD - GetTime()
+        return MyCD
+    end
 end
 
 function XB.Game:IsInRange(SpellID,Unit)
-    return LibStub("SpellRange-1.0").IsSpellInRange(SpellID,Unit)
+    local _,_,_,_,minRange,maxRange = GetSpellInfo(SpellID)
+    return IsSpellInRange(GetSpellInfo(SpellID),Unit) == 1 
+            or (minRange ~= nil and minRange == 0 and maxRange ~= nil and maxRange == 0) 
+            or (minRange ~= nil and XB.Protected.Distance(Unit) >= minRange and maxRange ~= nil and XB.Protected.Distance(Unit) <= maxRange)
 end
 
 function XB.Game:GetCharges(SpellID)
@@ -168,5 +172,17 @@ function XB.Game:HasThreat(Unit,PlayerUnit)
     return false
 end
 
+function XB.Game:Isattacking()
+    return IsCurrentSpell(6603)
+end
+
+function XB.Game:GCD()
+    local gcd = (1.5 / ((UnitSpellHaste("player")/100)+1)) --getSpellCD(61304)
+    if gcd < 0.75 then
+        return 0.75
+    else
+        return gcd
+    end
+end
+
 XB.Globals.Game = XB.Game
-XB.Globals.Player = XB.Player

@@ -4,11 +4,11 @@ local GetNumGroupMembers = GetNumGroupMembers
 local IsInGroup          = IsInGroup
 
 XB.Protected.Cast = function(spell, target)
-  XB.Faceroll:Set(spell, target)
+  -- XB.Faceroll:Set(spell, target)
 end
 
 XB.Protected.CastGround = function(spell, target)
-  XB.Faceroll:Set(spell, target)
+  -- XB.Faceroll:Set(spell, target)
 end
 
 XB.Protected.Macro = function()

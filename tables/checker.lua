@@ -2,9 +2,13 @@ local _, XB                                 = ...
 XB.Checker                                  = {}
 local GetInstanceLockTimeRemaining          = GetInstanceLockTimeRemaining
 local GetInstanceLockTimeRemainingEncounter = GetInstanceLockTimeRemainingEncounter
+local GetSpellInfo                          = GetSpellInfo
+local GetTime                               = GetTime
 local IsInInstance                          = IsInInstance
 local UnitAffectingCombat                   = UnitAffectingCombat
 local UnitCanAttack                         = UnitCanAttack
+local UnitCastingInfo                       = UnitCastingInfo
+local UnitChannelInfo                       = UnitChannelInfo
 local UnitClassification                    = UnitClassification
 local UnitCreatureType                      = UnitCreatureType
 local UnitExists                            = ObjectExists or UnitExists
@@ -13,8 +17,8 @@ local UnitIsDeadOrGhost                     = UnitIsDeadOrGhost
 local UnitIsFriend                          = UnitIsFriend
 local UnitIsUnit                            = UnitIsUnit
 local UnitIsVisible                         = UnitIsVisible
-local UnitName                              = UnitName
 local UnitLevel                             = UnitLevel
+local UnitName                              = UnitName
 
 local Dummies = {
 -- Misc/Unknown
@@ -27,7 +31,7 @@ local Dummies = {
     [17578]  = "Hellfire Training Dummy",     -- Lvl 1 (The Shattered Halls)
     [60197]  = "Training Dummy",              -- Lvl 1 (Scarlet Monastery)
     [64446]  = "Training Dummy",              -- Lvl 1 (Scarlet Monastery)
--- Level 3    
+-- Level 3
     [44171]  = "Training Dummy",              -- Lvl 3 (New Tinkertown, Dun Morogh)
     [44389]  = "Training Dummy",              -- Lvl 3 (Coldridge Valley)
     [44848]  = "Training Dummy",               -- Lvl 3 (Camp Narache, Mulgore)
@@ -38,7 +42,7 @@ local Dummies = {
     [44820]  = "Training Dummy",              -- Lvl 3 (Valley of Trials, Durotar)
     [44937]  = "Training Dummy",              -- Lvl 3 (Eversong Woods, Sunstrider Isle)
     [48304]  = "Training Dummy",              -- Lvl 3 (Kezan)
--- Level 55    
+-- Level 55
     [32541]  = "Initiate's Training Dummy",   -- Lvl 55 (Plaguelands: The Scarlet Enclave)
     [32545]  = "Initiate's Training Dummy",   -- Lvl 55 (Eastern Plaguelands)
 -- Level 60
@@ -56,7 +60,7 @@ local Dummies = {
     [46647]  = "Training Dummy",              -- Lvl 85 (Orgrimmar, Stormwind City)
 -- Level 90
     [67127]  = "Training Dummy",              -- Lvl 90 (Vale of Eternal Blossoms)
--- Level 95    
+-- Level 95
     [79414]  = "Training Dummy",              -- Lvl 95 (Broken Shore, Talador)
 -- Level 100
     [87317]  = "Training Dummy",              -- Lvl 100 (Lunarfall, Frostwall) - Damage
@@ -103,11 +107,11 @@ local Dummies = {
     [87761]  = "Dungeoneer's Training Dummy", -- Lvl 102 (Frostwall) - Damage
     [88288]  = "Dungeoneer's Training Dummy", -- Lvl 102 (Frostwall) - Tank
     [88314]  = "Dungeoneer's Training Dummy", -- Lvl 102 (Lunarfall) - Tank
-    [88836]  = "Dungeoneer's Training Dummy", -- Lvl 102 (Warspear) - Tank    
+    [88836]  = "Dungeoneer's Training Dummy", -- Lvl 102 (Warspear) - Tank
     [93828]  = "Training Dummy",              -- Lvl 102 (Hellfire Citadel)
     [97668]  = "Boxer's Trianing Dummy",      -- Lvl 102 (Highmountain)
     [98581]  = "Prepfoot Training Dummy",     -- Lvl 102 (Highmountain)
--- Level ??        
+-- Level ??
     [24792]  = "Advanced Training Dummy",     -- Lvl ?? Boss (Location Unknonw)
     [30527]  = "Training Dummy",               -- Lvl ?? Boss (Location Unknonw)
     [31146]  = "Raider's Training Dummy",     -- Lvl ?? (Orgrimmar, Stormwind City, Ironforge, ...)
@@ -157,6 +161,23 @@ local SpecialUnitVerify = {
     end },     -- Eye of Il'gynoth
 }
 
+local ShouldContinue = {
+    1022,           -- Hand of Protection
+    31821,          -- Devotion
+    104773,         -- Unending Resolve
+}
+
+local ShouldStop = {
+    137457,        -- Piercing Roar(Oondasta)
+    138763,         -- Interrupting Jolt(Dark Animus)
+    143343,         -- Deafening Screech(Thok)
+    158093,         -- Interrupting Shout (Twin Ogrons:Pol)
+    160838,         -- Disrupting Roar (Hans'gar and Franzok)
+
+    -- 7.x legion
+    196543,         -- 震慑吼叫 (Fenryr)
+}
+
 function XB.Checker:ByPassMounts()
     for i=1, #ByPassMounts do
         if XB.Game:GetUnitBuff('player', ByPassMounts[i]) then
@@ -179,7 +200,56 @@ function XB.Checker:IsSafeToAttack(Unit)
     return true
 end
 
-function XB.Checker:ShouldStopCasting()
+function XB.Checker:ShouldStopCasting(SpellID,isChannel)
+    local isChannel = isChannel or false
+    for i=1,5 do
+        local boss = 'boss'..i
+        if UnitExists(boss) then
+            for k=1,#ShouldContinue do
+                if XB.Game:GetUnitBUffAny('player',ShouldContinue[k]) then return false end
+            end
+            
+            if not isChannel and XB.Game:GetCastTime(SpellID) == 0 then return false end
+
+            local name, _, _, _, _, endTime = UnitCastingInfo(boss)
+            if name then
+                for j=1,#ShouldStop do
+                    if name == select(1,GetSpellInfo(ShouldStop[j])) then
+                        if isChannel then
+                            return XB.Game:GCD() + GetTime() + 100 > endTime
+                        else
+                            local castTime = XB.Game:GetCastTime(SpellID)
+                            if castTime == 0 then return false end
+                            return castTime + GetTime() + 100 > endTime
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return false
+end
+
+function XB.Checker:BetterStopCasting()
+    for i=1,5 do
+        local boss = 'boss'..i
+        if UnitExists(boss) then
+            local name, _, _, _, _, endTime = UnitCastingInfo('player')
+            if name == nil then name, _, _, _, _, endTime = UnitChannelInfo('player') end
+            if name == nil then return false end
+            for k=1,#ShouldContinue do
+                if XB.Game:GetUnitBUffAny('player',ShouldContinue[k]) then return false end
+            end
+            local bossCast, _, _, _, _, bossEndTime = UnitCastingInfo(boss)
+            if bossCast then
+                for j=1,#ShouldStop do
+                    if bossCast == select(1,GetSpellInfo(ShouldStop[j])) then
+                        return endTime >= bossEndTime
+                    end
+                end
+            end
+        end
+    end
     return false
 end
 
@@ -220,7 +290,7 @@ function XB.Checker:IsBoss(Unit)
         local solo = XB.Game:IsSolo()
         if ((unitClassification == 'race' and UnitHealthMax(Unit) > (4*UnitHealthMax('player')) and solo)
             or unitClassification == "rareelite" and solo
-            or unitClassification == "worldboss" 
+            or unitClassification == "worldboss"
             or (unitClassification == 'elite' and UnitHealthMax(Unit) > (4*UnitHealthMax('player')) and solo)
             or UnitLevel(Unit) < 0
             or UnitLevel(Unit) >= 113) and not UnitIsTrivial(Unit)

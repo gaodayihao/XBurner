@@ -2,20 +2,23 @@ local _, XB                     = ...
 XB.Area                         = {}
 local C_Timer                   = C_Timer
 local wipe                      = wipe
+local UnitHealth                = UnitHealth
 
 local Cache = {}
+local DebuffCache = {}
 
 C_Timer.NewTicker(1, (function()
     wipe(Cache)
 end), nil)
 
 function XB.Area:Enemies(distance,Unit,infront)
-    local Unit = Unit or 'player'
     local distance = distance or 40
+    local Unit = Unit or 'player'
     local infront = infront or false
     local guid = UnitGUID(Unit)
 
     if Cache[guid] and Cache[guid][distance] and Cache[guid][distance][infront] then
+        table.sort(Cache[guid][distance][infront], function(a,b) return UnitHealth(a.key) > UnitHealth(b.key) end)
         return Cache[guid][distance][infront]
     end
 
@@ -23,14 +26,27 @@ function XB.Area:Enemies(distance,Unit,infront)
     if not Cache[guid][distance] then  Cache[guid][distance] = {} end
     Cache[guid][distance][infront] = {}
 
-    for _, Obj in pairs(NeP.OM:Get('Enemy')) do
-        if XB.Checker:IsValidEnemy(Obj) and (not infront or XB.Protected.Infront(Unit,Obj)) and XB.Protected.Distance(Unit,Obj) <= distance then
-            table.insert( Cache[guid][distance][infront], Obj )
+    for _, Obj in pairs(XB.OM:Get('Enemy')) do
+        if XB.Checker:IsValidEnemy(Obj.key) and (not infront or XB.Protected.Infront(Unit,Obj.key)) and XB.Protected.Distance(Unit,Obj.key) <= distance then
+            table.insert(Cache[guid][distance][infront], Obj)
         end
     end
+    table.sort(Cache[guid][distance][infront], function(a,b) return UnitHealth(a.key) > UnitHealth(b.key) end)
     return Cache[guid][distance][infront]
 end
 
 function XB.Area:EnemiesT(distance,infront)
     return XB.Area:Enemies(distance,'target',infront)
+end
+
+function XB.Area:Debuff(SpellID)
+    local enemies = XB.Area:Enemies()
+    local count = 0
+    for i=1,#enemies do
+        local enemy = enemies[i]
+        if XB.Game:GetUnitDebuff(enemy,SpellID) then
+            count = count + 1
+        end
+    end
+    return count
 end

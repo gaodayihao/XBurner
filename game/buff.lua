@@ -38,9 +38,9 @@ local function BuildBuffAndDebuff()
 
     local debuffs = XB.Abilities:GetDebuffsTable(classIndex,spec)
     wipe(XB.Game.Debuff)
-    for name, spellID in pairs(debuffs) do
-        XB.Game.Debuff[name] = function(target)
-            local target = target and target or 'target'
+    for Name, SpellID in pairs(debuffs) do
+        XB.Game.Debuff[Name] = function(target)
+            local target = target or 'target'
             local debuff    = {
                 up          = false,
                 down        = true,
@@ -48,9 +48,10 @@ local function BuildBuffAndDebuff()
                 remains     = 0,
                 stack       = 0,
                 refresh     = true,
+                count       = function() return XB.Area:Debuff(SpellID) end
             }
-            local name, duration, expires, caster, timeMod, stack = XB.Game:GetUnitDebuff(target,spellID)
-            if not not name then
+            local name, duration, expires, caster, timeMod, stack = XB.Game:GetUnitDebuff(target,SpellID)
+            if name ~= nil then
                 debuff.remains  = math.max((expires - GetTime()) / timeMod,0)
                 debuff.up       = debuff.remains > 0
                 debuff.down     = not debuff.up

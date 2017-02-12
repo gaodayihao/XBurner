@@ -1,5 +1,5 @@
 local _, XB                     = ...
-XB.Player.Talent                  = {}
+XB.Game.Talent                  = {}
 local GetSpecialization         = GetSpecialization
 local GetSpecializationInfo     = GetSpecializationInfo
 local UnitClass                 = UnitClass
@@ -19,9 +19,9 @@ local function BuildTalent()
             table.insert(tempTalents,talentID,selected)
         end
     end
-    wipe(XB.Player.Talent)
+    wipe(XB.Game.Talent)
     for name, spellID in pairs(talents) do
-        XB.Player.Talent[name] = {
+        XB.Game.Talent[name] = {
             enable = not not tempTalents[spellID]
         }
     end

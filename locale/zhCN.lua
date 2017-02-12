@@ -37,6 +37,7 @@ XB.Locale.zhCN = {
   OM = {
     Option = '单位列表',
     Enemy = '敌对',
+    EnemyVerify = '敌对*',
     Friendly = '友方',
     Dead = '死亡',
     Title = '单位列表',

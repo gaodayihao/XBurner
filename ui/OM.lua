@@ -20,17 +20,18 @@ XB.Interface:Add(L:TA('OM', 'Option'), function() parent:Show() end)
 
 local dOM = 'Enemy'
 local bt = {
-    ENEMIE = {a = 'TOPLEFT', b = 'Enemy'},
-    FRIENDLY = {a = 'TOP', b = 'Friendly'},
-    DEAD = {a = 'TOPRIGHT', b = 'Dead'}
+    ENEMIE = {a = 'TOPLEFT', b = 'Enemy', x = 0},
+    EnemyVerify = {a = 'TOP', b = 'EnemyVerify', x = -parent.content:GetWidth()/8},
+    FRIENDLY = {a = 'TOP', b = 'Friendly', x = parent.content:GetWidth()/8},
+    DEAD = {a = 'TOPRIGHT', b = 'Dead', x = 0}
 }
 for k,v in pairs(bt) do
     bt[k] = DiesalGUI:Create("Button")
     parent:AddChild(bt[k])
     bt[k]:SetParent(parent.content)
-    bt[k]:SetPoint(v.a, parent.content, v.a, 0, 0)
+    bt[k]:SetPoint(v.a, parent.content, v.a, v.x,0)
     bt[k]:SetFont(SharedMedia:Fetch('font', 'Calibri Bold'), 10)
-    bt[k].frame:SetSize(parent.content:GetWidth()/3, 20)
+    bt[k].frame:SetSize(parent.content:GetWidth()/4, 20)
     bt[k]:AddStyleSheet(XB.UI.buttonStyleSheet)
     bt[k]:SetEventListener("OnClick", function() dOM = v.b end)
     bt[k]:SetText(L:TA('OM', v.b))
@@ -66,7 +67,8 @@ end
 local function RefreshGUI()
     local offset = -5
     recycleStatusBars()
-    for _, Obj in pairs(XB.OM:Get(dOM)) do
+	local units = dOM == 'EnemyVerify' and XB.Area:Enemies() or XB.OM:Get(dOM)
+    for _, Obj in pairs(units) do
         local Health = math.floor(((UnitHealth(Obj.key) or 1) / (UnitHealthMax(Obj.key) or 1) * 100))
         local statusBar = getStatusBar()
         local distance = XB.Protected.Distance(Obj.key)
