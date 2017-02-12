@@ -168,14 +168,14 @@ local ShouldContinue = {
 }
 
 local ShouldStop = {
-    137457,        -- Piercing Roar(Oondasta)
-    138763,         -- Interrupting Jolt(Dark Animus)
-    143343,         -- Deafening Screech(Thok)
-    158093,         -- Interrupting Shout (Twin Ogrons:Pol)
-    160838,         -- Disrupting Roar (Hans'gar and Franzok)
+    [137457]='',        -- Piercing Roar(Oondasta)
+    [138763]='',         -- Interrupting Jolt(Dark Animus)
+    [143343]='',         -- Deafening Screech(Thok)
+    [158093]='',         -- Interrupting Shout (Twin Ogrons:Pol)
+    [160838]='',         -- Disrupting Roar (Hans'gar and Franzok)
 
     -- 7.x legion
-    196543,         -- 震慑吼叫 (Fenryr)
+    [196543]='',         -- 震慑吼叫 (Fenryr)
 }
 
 function XB.Checker:ByPassMounts()
@@ -211,18 +211,12 @@ function XB.Checker:ShouldStopCasting(SpellID,isChannel)
             
             if not isChannel and XB.Game:GetCastTime(SpellID) == 0 then return false end
 
-            local name, _, _, _, _, endTime = UnitCastingInfo(boss)
-            if name then
-                for j=1,#ShouldStop do
-                    if name == select(1,GetSpellInfo(ShouldStop[j])) then
-                        if isChannel then
-                            return XB.Game:GCD() + GetTime() + 100 > endTime
-                        else
-                            local castTime = XB.Game:GetCastTime(SpellID)
-                            if castTime == 0 then return false end
-                            return castTime + GetTime() + 100 > endTime
-                        end
-                    end
+            local name, _, _, _, _, endTime, _, castID = UnitCastingInfo(boss)
+            if name ~= nil and ShouldStop[castID]~=nil then
+                if isChannel then
+                    return XB.Game:GCD() + GetTime() + 100 > endTime
+                else
+                    return XB.Game:GetCastTime(SpellID) + GetTime() + 100 > endTime
                 end
             end
         end
@@ -240,13 +234,9 @@ function XB.Checker:BetterStopCasting()
             for k=1,#ShouldContinue do
                 if XB.Game:GetUnitBUffAny('player',ShouldContinue[k]) then return false end
             end
-            local bossCast, _, _, _, _, bossEndTime = UnitCastingInfo(boss)
-            if bossCast then
-                for j=1,#ShouldStop do
-                    if bossCast == select(1,GetSpellInfo(ShouldStop[j])) then
-                        return endTime >= bossEndTime
-                    end
-                end
+            local bossCast, _, _, _, _, bossEndTime, _, castID = UnitCastingInfo(boss)
+            if bossCast ~= nil and ShouldStop[castID]~=nil then
+                return endTime >= bossEndTime
             end
         end
     end
