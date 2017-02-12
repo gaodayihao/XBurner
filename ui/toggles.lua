@@ -18,7 +18,7 @@ XB.Core:WhenInGame(function()
 end)
 
 local Toggles = {}
-local tcount = 0
+local tIndex = 0
 
 local function SetTexture(parent, icon)
     local temp = parent:CreateTexture()
@@ -61,14 +61,14 @@ local function OnEnter(self, name, text)
 end
 
 local function CreateToggle(eval)
-    local pos = (XB.ButtonsSize*tcount)+(tcount*XB.ButtonsPadding)-(XB.ButtonsSize+XB.ButtonsPadding) - (XB.ButtonsSize*(tcount-2)) *0.1
     eval.key = eval.key:lower()
     Toggles[eval.key] = CreateFrame("CheckButton", eval.key, mainframe.content)
     local temp = Toggles[eval.key]
+    temp.index = tIndex
+    tIndex = tIndex + 1
     temp:SetFrameStrata("high")
     temp:SetFrameLevel(1)
     temp.key = eval.key
-    temp:SetPoint("LEFT", mainframe.content, pos, 0)
     temp:SetSize(XB.ButtonsSize*0.8, XB.ButtonsSize*0.8)
     temp:SetFrameLevel(1)
     temp:SetNormalFontObject("GameFontNormal")
@@ -114,17 +114,20 @@ function XB.Interface:AddToggle(eval)
 end
 
 function XB.Interface:RefreshToggles()
-    tcount = 0
+    local temp = {}
     for k in pairs(Toggles) do
         if Toggles[k]:IsShown() then
-            tcount = tcount + 1
-            local pos = (XB.ButtonsSize*tcount)+(tcount*XB.ButtonsPadding)-(XB.ButtonsSize+XB.ButtonsPadding) - (XB.ButtonsSize*(tcount-2)) *0.1 
-            Toggles[k]:SetSize(XB.ButtonsSize*0.8, XB.ButtonsSize*0.8)
-            Toggles[k].Checked_Frame:SetSize(XB.ButtonsSize*1.67, XB.ButtonsSize*1.67)
-            Toggles[k]:SetPoint("LEFT", mainframe.content, pos, 0)
+            table.insert(temp,Toggles[k])
         end
     end
-    mainframe.settings.width = tcount*(XB.ButtonsSize+XB.ButtonsPadding)-XB.ButtonsPadding - (XB.ButtonsSize*(tcount-2)) *0.1
+    table.sort( temp, function(a,b) return a.index < b.index end )
+    for i = 1,#temp do
+        local pos = (XB.ButtonsSize*i)+(i*XB.ButtonsPadding)-(XB.ButtonsSize+XB.ButtonsPadding) - (XB.ButtonsSize*(i-2)) *0.1 
+        temp[i]:SetSize(XB.ButtonsSize*0.8, XB.ButtonsSize*0.8)
+        temp[i].Checked_Frame:SetSize(XB.ButtonsSize*1.67, XB.ButtonsSize*1.67)
+        temp[i]:SetPoint("LEFT", mainframe.content, pos, 0)
+    end
+    mainframe.settings.width = #temp*(XB.ButtonsSize+XB.ButtonsPadding)-XB.ButtonsPadding - (XB.ButtonsSize*(#temp-2)) *0.1
     mainframe.settings.height = XB.ButtonsSize+18
 
     mainframe.settings.minHeight = mainframe.settings.height

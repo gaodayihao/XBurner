@@ -8,6 +8,9 @@
 	<Binding name="Cooldowns" description="Toggle ON/OFF" header="Core" category="XBurner">
 		XB.Interface:toggleToggle('cooldowns')
 	</Binding>
+	<Binding name="CooldownsOnBoss" description="Toggle ON/OFF" header="Core" category="XBurner">
+		XB.Interface:toggleToggle('cooldownsOnBoss')
+	</Binding>
 	<Binding name="AoE" description="Toggle ON/OFF" header="Core" category="XBurner">
 		XB.Interface:toggleToggle('aoe')
 	</Binding>
