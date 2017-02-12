@@ -30,3 +30,7 @@ function XB.Area:Enemies(distance,Unit,infront)
     end
     return Cache[guid][distance][infront]
 end
+
+function XB.Area:EnemiesT(distance,infront)
+    return XB.Area:Enemies(distance,'target',infront)
+end
