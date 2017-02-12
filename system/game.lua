@@ -172,7 +172,7 @@ function XB.Game:HasThreat(Unit,PlayerUnit)
     return false
 end
 
-function XB.Game:Isattacking()
+function XB.Game:IsAttacking()
     return IsCurrentSpell(6603)
 end
 

@@ -5,7 +5,6 @@ local wipe                      = wipe
 local UnitHealth                = UnitHealth
 
 local Cache = {}
-local DebuffCache = {}
 
 C_Timer.NewTicker(1, (function()
     wipe(Cache)
