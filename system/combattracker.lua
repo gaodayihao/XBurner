@@ -132,12 +132,15 @@ function XB.CombatTracker:getDMG(UNIT)
 end
 
 function XB.CombatTracker:TimeToDie(unit)
+	if XB.Checker:IsDummy(unit) then
+		return 999
+	end
 	local ttd = 0
 	local DMG, Hits = self:getDMG(unit)
 	if DMG >= 1 and Hits > 1 then
 		ttd = UnitHealth(unit) / DMG
 	end
-	return ttd or -1
+	return ttd or 0
 end
 
 function XB.CombatTracker:LastCast(unit)

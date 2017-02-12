@@ -1,7 +1,6 @@
 local _, XB             = ...
 XB.Healing              = {}
 local Roster            = {}
-local RosterCount       = 0
 local maxDistance       = 40
 
 -- Local stuff for speed
@@ -25,7 +24,6 @@ local function Clean()
         or UnitIsDeadOrGhost(Obj.key)
         or GUID ~= UnitGUID(Obj.key) then
             Roster[GUID] = nil
-            RosterCount = RosterCount - 1
         end
     end
 end
@@ -54,7 +52,6 @@ local function Add(Obj)
     Obj.healthMax = maxHealth
     Obj.role = Role
     Roster[Obj.guid] = Obj
-    RosterCount = RosterCount + 1
 end
 
 local function Refresh(GUID, Obj)
@@ -70,10 +67,6 @@ end
 function XB.Healing:GetRoster()
     Clean()
     return Roster
-end
-
-function XB.Healing:GetRosterCount()
-    return RosterCount
 end
 
 C_Timer.NewTicker(0.1, (function()

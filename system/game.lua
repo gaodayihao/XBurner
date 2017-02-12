@@ -72,6 +72,10 @@ function XB.Game:UnitID(Unit)
     return 0
 end
 
+function XB.Game:IsSolo()
+    return GetNumGroupMembers() == 0
+end
+
 function XB.Game:GetUnitPower(Target,powerType)
     local Target = Target or 'player'
     local powerType = powerType or UnitPowerType(Target)
