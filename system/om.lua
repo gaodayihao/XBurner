@@ -52,6 +52,8 @@ function XB.OM:Insert(Tbl, Obj, GUID)
             id = XB.Game:UnitID(Obj) or 0,
             guid = GUID
         }
+    elseif Test and UnitExists(Test.key) then
+        Test.name = UnitName(Obj)
     end
 end
 

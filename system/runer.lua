@@ -20,6 +20,7 @@ local UnitIsFriend              = UnitIsFriend
 local UnitIsUnit                = UnitIsUnit
 local GetSpellInfo              = GetSpellInfo
 local SpellStopCasting          = SpellStopCasting
+local UnitAffectingCombat       = UnitAffectingCombat
 
 -- Advanced APIs
 local ClickPosition             = ClickPosition or (function() end)
@@ -60,12 +61,10 @@ function XB.Runer:CastSpell(Unit,SpellID,FacingSkip,MovementSkip,SpamAllowed,Kno
         -- we create an usableSkip for some specific spells like hammer of wrath aoe mode
         if usableSkip == nil then usableSkip = false end
         -- stop if not enough power for that spell
-        --print(-1)
         if not usableSkip and not IsUsableSpell(SpellID) then return false end
         -- default noCast to false
         if noCast == nil then nocast = false end
         -- make sure it is a known spell
-        --print(0)
         if not (KnownSkip or XB.Game:IsKnownSpell(SpellID)) then return false end
         if SpamAllowed == nil then SpamAllowed = false end
         if DistanceSkip == nil then DistanceSkip = false end
@@ -77,22 +76,16 @@ function XB.Runer:CastSpell(Unit,SpellID,FacingSkip,MovementSkip,SpamAllowed,Kno
         elseif not XB.Checker:IsSafeToAttack(Unit) then -- enemy
             return false
         end
-        --print(1)
         -- if MovementSkip is false then we dont check it
         if MovementSkip or not XB.Game:IsMoving("player") or XB.Checker:ByPassMove() or (XB.Game:GetCastTime(SpellID) == 0 and not isChannel) then
-            -- print(2)
             -- if ability is ready and in range
             -- if getSpellCD(SpellID) < select(4,GetNetStats()) / 1000
             if (XB.Game:GetSpellCD(SpellID) < select(4,GetNetStats()) / 1000) and (DistanceSkip or XB.Game:IsInRange(SpellID,Unit)) then
-            --print(3)
                 -- if spam is not allowed
                 if SpamAllowed == false then
-            --print(4)
                     -- get our last/current cast
                     if TimersTable[SpellID] == nil or TimersTable[SpellID] <= GetTime() -0.6 then
                         if (FacingSkip or XB.Protected.Infront("player",Unit)) and (UnitIsUnit("player",Unit) or XB.Protected.LineOfSight("player",Unit)) then
-
-            --print(5)
                             if noCast then 
                                 return true
                             else 
@@ -128,6 +121,99 @@ function XB.Runer:CastSpell(Unit,SpellID,FacingSkip,MovementSkip,SpamAllowed,Kno
                     end
                 end
             end
+        end
+    end
+    return false
+end
+
+
+function XB.Runer:CastGroundAtBestLocation(spellID, radius, minUnits, maxRange, minRange, spellType)
+    -- begin
+    if minRange == nil then minRange = 0 end
+    local allUnitsInRange = {}
+    -- Make function usable between enemies and friendlies
+    local unitTable = XB.OM:Get(spellType)
+    -- fill allUnitsInRange with data from enemiesEngine/healingEngine
+    --Print("______________________1")
+    -- for i=1,#unitTable do
+    for k, v in pairs(unitTable) do
+        local thisUnit = unitTable[k].key
+        local thisDistance = XB.Protected.Distance(thisUnit)
+        local hasThreat = XB.Checker:IsValidEnemy(thisUnit) or UnitIsFriend(thisUnit,"player")
+        --Print(thisUnit.." - "..thisDistance)
+        if thisDistance < maxRange and thisDistance >= minRange and hasThreat then
+            --Print("distance passed")
+            if not UnitIsDeadOrGhost(thisUnit) 
+                and (XB.Protected.Infront("player",thisUnit) or UnitIsUnit(thisUnit,"player")) 
+                and XB.Protected.LineOfSight(thisUnit) 
+                and not XB.Game:IsMoving(thisUnit)
+            then
+                --Print("ghost passed")
+                if UnitAffectingCombat(thisUnit) or (spellType == "Friendly" and XB.Game:GetHP(thisUnit) < 100) or XB.Checker:IsDummy(thisUnit) then
+                    --Print("combat and dummy passed")
+                    table.insert(allUnitsInRange,thisUnit)
+                end
+            end
+        end
+    end
+    -- check units in allUnitsInRange against each them
+    --Print("______________________2")
+    local goodUnits = {}
+    for i=1,#allUnitsInRange do
+        local thisUnit = allUnitsInRange[i]
+        local unitsAroundThisUnit = {}
+        --Print("units around "..thisUnit..":")
+        for j=1,#allUnitsInRange do
+            local checkUnit = allUnitsInRange[j]
+            --Print(checkUnit.."?")
+            if XB.Protected.Distance(thisUnit,checkUnit) < radius then
+                --Print(checkUnit.." added")
+                table.insert(unitsAroundThisUnit,checkUnit)
+            end
+        end
+        if #goodUnits <= #unitsAroundThisUnit then
+            --Print("units around check: "..#unitsAroundThisUnit.." >= "..#goodUnits)
+            if tonumber(minUnits) <= #unitsAroundThisUnit then
+                --Print("enough units around: "..#unitsAroundThisUnit)
+                goodUnits = unitsAroundThisUnit
+            end
+        end
+    end
+    -- where to cast
+    --Print("______________________3")
+    if #goodUnits > 0 then
+        --Print("goodUnits > 0")
+        if #goodUnits > 1 then
+            --Print("goodUnits > 1")
+            local mX, mY,mZ = 0,0,0
+            for i=1,#goodUnits do
+                local thisUnit = goodUnits[i]
+                local thisX,thisY,thisZ = ObjectPosition(thisUnit)
+                if mX == 0 or mY == 0 or mZ == 0 then
+                    mX,mY,mZ = thisX,thisY,thisZ
+                else
+                    mX = 0.5*(mX + thisX)
+                    mY = 0.5*(mY + thisY)
+                    mZ = 0.5*(mZ + thisZ)
+                end
+            end
+            --Print(mX.." "..mY.." "..mZ)
+            if mX ~= 0 and mY ~= 0 and mZ ~= 0 then
+                local spellName = GetSpellInfo(SpellID)
+                XB.Runer.LastCast = SpellID
+                XB.Interface:UpdateIcon('mastertoggle', SpellID)
+                XB.Protected.Cast(spellName,Unit)
+                ClickPosition(mX,mY,mZ)
+                return true
+            end
+        else
+            local thisX,thisY,thisZ = ObjectPosition(goodUnits[1])
+            local spellName = GetSpellInfo(SpellID)
+            XB.Runer.LastCast = SpellID
+            XB.Interface:UpdateIcon('mastertoggle', SpellID)
+            XB.Protected.Cast(spellName,Unit)
+            ClickPosition(thisX,thisY,thisZ);
+            return true
         end
     end
     return false

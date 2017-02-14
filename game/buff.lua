@@ -13,7 +13,8 @@ local function BuildBuffAndDebuff()
 
     wipe(XB.Game.Buff)
     for name, spellID in pairs(buffs) do
-        XB.Game.Buff[name] = function(target)
+        XB.Game.Buff[name] = function(target,any)
+            if any == nil then any = true else any = false end
             local target = target and target or 'player'
             local buff      = {
                 up          = false,
@@ -23,8 +24,13 @@ local function BuildBuffAndDebuff()
                 stack       = 0,
                 refresh     = true,
             }
-            local name, duration, expires, caster, timeMod, stack = XB.Game:GetUnitBuff(target,spellID)
-            if not not name then
+            local name,duration,expires,caster,timeMod,stack = nil,nil,nil,nil,nil,nil
+            if any then
+                name,duration,expires,caster,timeMod,stack = XB.Game:GetUnitBuffAny(target,spellID)
+            else
+                name,duration,expires,caster,timeMod,stack = XB.Game:GetUnitBuff(target,spellID)
+            end
+            if name ~= nil then
                 buff.remains    = math.max((expires - GetTime()) / timeMod,0)
                 buff.up         = buff.remains > 0
                 buff.down       = not buff.up
@@ -39,7 +45,8 @@ local function BuildBuffAndDebuff()
     local debuffs = XB.Abilities:GetDebuffsTable(classIndex,spec)
     wipe(XB.Game.Debuff)
     for Name, SpellID in pairs(debuffs) do
-        XB.Game.Debuff[Name] = function(target)
+        XB.Game.Debuff[Name] = function(target, any)
+            local any = any or false
             local target = target or 'target'
             local debuff    = {
                 up          = false,
@@ -50,7 +57,12 @@ local function BuildBuffAndDebuff()
                 refresh     = true,
                 count       = function() return XB.Area:Debuff(SpellID) end
             }
-            local name, duration, expires, caster, timeMod, stack = XB.Game:GetUnitDebuff(target,SpellID)
+            local name, duration, expires, caster, timeMod, stack = nil, nil, nil, nil ,nil ,nil
+            if any then
+                name, duration, expires, caster, timeMod, stack =  XB.Game:GetUnitDebuffAny(target,SpellID)
+            else
+                name, duration, expires, caster, timeMod, stack = XB.Game:GetUnitDebuff(target,SpellID)
+            end
             if name ~= nil then
                 debuff.remains  = math.max((expires - GetTime()) / timeMod,0)
                 debuff.up       = debuff.remains > 0

@@ -1,5 +1,9 @@
 local _, XB                     = ...
-XB.Game.Spell                 = {}
+XB.Game.Spell                   = {}
+XB.Game.Spell.Cast              = {}
+XB.Game.Spell.Cooldown          = {}
+XB.Game.Spell.SpellInfo         = {}
+
 local GetSpecialization         = GetSpecialization
 local GetSpecializationInfo     = GetSpecializationInfo
 local UnitClass                 = UnitClass
@@ -8,9 +12,10 @@ local function BuildSpells()
     local classIndex = select(3,UnitClass('player'))
     local spec = GetSpecializationInfo(GetSpecialization())
 
-    wipe(XB.Game.Spell)
-    XB.Game.Spell.Cast       = {}
-    XB.Game.Spell.Cooldown   = {}
+    wipe(XB.Game.Spell.Cast)
+    wipe(XB.Game.Spell.Cooldown)
+    wipe(XB.Game.Spell.SpellInfo)
+
     XB.Game.Spell.SpellInfo  = XB.Abilities:GetSpellsTable(classIndex,spec)
 
     for k,v in pairs(XB.Game.Spell.SpellInfo) do
@@ -56,6 +61,7 @@ local function BuildSpells()
                     local aoe = false
                     local channel = false
                     local know = false
+                    local castGroundFlag = 'Enemy'
 
                     for i = 1, select('#', ...) do
                         local arg = select(i, ...)
@@ -65,6 +71,7 @@ local function BuildSpells()
                         if arg == 'aoe' then aoe = true end
                         if arg == 'channel' then channel = true end
                         if arg == 'know' then know = true end
+                        if arg == 'heal' then castGroundFlag = 'Friendly' end
                         if type(arg) == 'number' then
                             if minUnits == nil then
                                 minUnits = arg
@@ -80,7 +87,7 @@ local function BuildSpells()
                     if best then
                         local minRange = select(5,GetSpellInfo(v))
                         local maxRange = select(6,GetSpellInfo(v))
-                        return XB.Runer:CastGroundAtBestLocation(spellCast,effectRng,minUnits,maxRange,minRange)
+                        return XB.Runer:CastGroundAtBestLocation(spellCast,effectRng,minUnits,maxRange,minRange,castGroundFlag)
                     else
                         return XB.Runer:CastSpell(unit,spellCast,aoe,false,false,know,dead,false,false,debug,channel)
                     end

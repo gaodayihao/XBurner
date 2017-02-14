@@ -168,7 +168,7 @@ local ShouldContinue = {
 }
 
 local ShouldStop = {
-    [137457]='',        -- Piercing Roar(Oondasta)
+    [137457]='',         -- Piercing Roar(Oondasta)
     [138763]='',         -- Interrupting Jolt(Dark Animus)
     [143343]='',         -- Deafening Screech(Thok)
     [158093]='',         -- Interrupting Shout (Twin Ogrons:Pol)

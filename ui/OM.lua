@@ -3,11 +3,15 @@ local _, XB = ...
 local DiesalGUI = LibStub('DiesalGUI-1.0')
 local SharedMedia = LibStub("LibSharedMedia-3.0")
 local L = XB.Locale
-local noop = function() end
-local TargetUnit = XB.Unlocked and TargetUnit or noop
 
 local statusBars = {}
 local statusBarsUsed = {}
+
+local TargetUnit = function(Unit)
+    if XB.Unlocked then
+        TargetUnit(Unit)
+    end
+end
 
 local parent = XB.Interface:BuildGUI({
     key = 'XBOMgui',
@@ -71,7 +75,7 @@ local function RefreshGUI()
     for _, Obj in pairs(units) do
         local Health = math.floor(((UnitHealth(Obj.key) or 1) / (UnitHealthMax(Obj.key) or 1) * 100))
         local statusBar = getStatusBar()
-        local distance = XB.Protected.Distance(Obj.key)
+        local distance = math.floor(XB.Protected.Distance(Obj.key))
         statusBar.frame:SetPoint('TOP', ListWindow.content, 'TOP', 2, offset )
         statusBar.frame.Left:SetText('|cff'..XB.Core:ClassColor(Obj.key, 'hex')..Obj.name)
         statusBar.frame.Right:SetText('( |cff0070deID|r: '..Obj.id..' / |cffabd473Health|r: '..Health..' / |cfffff569Dist|r: '..distance..' )')

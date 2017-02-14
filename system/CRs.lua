@@ -21,6 +21,10 @@ function XB.CR:AddGUI(key, eval)
     XB.Interface:AddCR_ST(key)
 end
 
+function XB.CR:UI(key)
+    return XB.Config:Read(XB.CR.CR.Name,key)
+end
+
 function XB.CR:Add(SpecID, ...)
     local classIndex = select(3, UnitClass('player'))
     -- This only allows crs we can use to be registered

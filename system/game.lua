@@ -6,19 +6,26 @@ local GetSpellCooldown          = GetSpellCooldown
 local GetSpellInfo              = GetSpellInfo
 local GetTime                   = GetTime
 local GetUnitSpeed              = GetUnitSpeed
+local IsCurrentSpell            = IsCurrentSpell
 local IsPlayerSpell             = IsPlayerSpell
+local IsSpellInRange            = IsSpellInRange
 local UnitBuff                  = UnitBuff
 local UnitDebuff                = UnitDebuff
 local UnitExists                = ObjectExists or UnitExists
 local UnitGUID                  = UnitGUID
+local UnitHealth                = UnitHealth
+local UnitHealthMax             = UnitHealthMax
 local UnitInParty               = UnitInParty
 local UnitInRaid                = UnitInRaid
 local UnitIsFriend              = UnitIsFriend
 local UnitIsUnit                = UnitIsUnit
 local UnitPower                 = UnitPower
 local UnitThreatSituation       = UnitThreatSituation
-local IsCurrentSpell            = IsCurrentSpell
-local IsSpellInRange            = IsSpellInRange
+local GetItemSpell              = GetItemSpell
+local GetItemCooldown           = GetItemCooldown
+local PlayerHasToy              = PlayerHasToy
+
+local ItemSpamDelay             = 0
 
 local function UnitBuffL(Target, SpellID, own)
     if Target == nil or not UnitExists(Target) then return nil end
@@ -56,6 +63,11 @@ function XB.Game:IsMoving(Unit)
     else
         return false
     end
+end
+
+function XB.Game:GetHP(Unit)
+    local hp = (UnitHealth(Unit) or 1) / (UnitHealthMax(Unit) or 1) * 100
+    return hp
 end
 
 function XB.Game:UnitID(Unit)
@@ -172,6 +184,28 @@ function XB.Game:HasThreat(Unit,PlayerUnit)
     return false
 end
 
+function XB.Game:UseItem(ItemID)
+    if GetTime() > ItemSpamDelay then
+        if ItemID<=19 then
+            if GetItemSpell(GetInventoryItemID("player",ItemID))~=nil then 
+                local slotItemID = GetInventoryItemID("player",ItemID)
+                if GetItemCooldown(slotItemID)==0 then
+                    XB.Protected.UseInvItem(ItemID);
+                    ItemSpamDelay = GetTime() + 1;
+                    return true
+                end
+            end
+        elseif ItemID>19 and (GetItemCount(ItemID) > 0 or PlayerHasToy(ItemID)) then
+            if GetItemCooldown(ItemID)==0 then
+                UseItemByName(GetItemInfo(ItemID));
+                ItemSpamDelay = GetTime() + 1;
+                return true
+            end
+        end
+    end
+    return false
+end
+
 function XB.Game:IsAttacking()
     return IsCurrentSpell(6603)
 end
@@ -186,3 +220,7 @@ function XB.Game:GCD()
 end
 
 XB.Globals.Game = XB.Game
+-- XB.Globals.Game = { 
+--     UnitID = XB.Game.UnitID,
+--     IsMoving = XB.Game.IsMoving
+-- }
