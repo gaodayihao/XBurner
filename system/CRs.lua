@@ -36,7 +36,7 @@ function XB.CR:Add(SpecID, ...)
         end
 
         -- Legacy stuff
-        local ev, InCombat, OutCombat, ExeOnLoad, GUI, ExeOnUnLoad, Pause = ...
+        local ev, InCombat, OutCombat, ExeOnLoad, ExeOnUnLoad, GUI, Pause, Range = ...
         if type(...) == 'string' then
             ev = {
                 name = ev,
@@ -45,7 +45,8 @@ function XB.CR:Add(SpecID, ...)
                 load = ExeOnLoad,
                 gui = GUI,
                 unload = ExeOnUnLoad,
-                pause = Pause
+                pause = Pause,
+                range = Range
             }
         else
             ev = ...
@@ -67,6 +68,7 @@ function XB.CR:Add(SpecID, ...)
         CRs[SpecID][ev.name].load = ev.load or noop
         CRs[SpecID][ev.name].unload = ev.unload or noop
         CRs[SpecID][ev.name].pause = ev.pause or (function() return false end)
+        CRs[SpecID][ev.name].range = ev.range or 5
         CRs[SpecID][ev.name][true] = ev.ic or noop
         CRs[SpecID][ev.name][false] = ev.ooc or noop
     end

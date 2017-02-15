@@ -15,6 +15,8 @@ local ttd                       = (function(Unit) return XB.CombatTracker:TimeTo
 local debuff                    = XB.Game.Debuff
 local cd                        = XB.Game.Spell.Cooldown
 local artifact                  = XB.Game.Artifact
+local UnitExists                = ObjectExists or UnitExists
+local UnitIsFriend              = UnitIsFriend
 
 local GUI = {
   {type = 'header', text = 'Abiliteis', align = 'center'},
@@ -105,7 +107,7 @@ local InCombat = function()
             end
         end
     -- shadow_word_pain,if=!talent.misery.enabled&dot.shadow_word_pain.remains<(3+(4%3))*gcd
-        if not talent.Misery and debuff.ShadowWordPain().remains < (3+(4%3))*gcd then
+        if not talent.Misery.enabled and debuff.ShadowWordPain().remains < (3+(4%3))*gcd then
             if cast.ShadowWordPain('target','aoe') then return true end
         end
     -- vampiric_touch,if=!talent.misery.enabled&dot.vampiric_touch.remains<(4+(4%3))*gcd
@@ -229,8 +231,8 @@ end
 
 local Pause = function()
     if game:IsCasting() and not game:IsCastingSpell(game.Spell.SpellInfo.MindFlay) then return true end
-    if not XB.Checker:IsValidEnemy('target') then return true end
+    if UnitExists('target') and (not XB.Checker:IsValidEnemy('target') and not UnitIsFriend('target')) then return true end
     return false
 end
 
-XB.CR:Add(258, '[XB] Priest - Shadow', InCombat, OutCombat, OnLoad, GUI, OnUnload, Pause)
+XB.CR:Add(258, '[XB] Priest - Shadow', InCombat, OutCombat, OnLoad, OnUnload, GUI, Pause, 40)

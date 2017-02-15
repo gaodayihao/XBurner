@@ -150,6 +150,11 @@ function XB.Interface:toggleToggle(key, state)
     self.actv = state or not self.actv
     self:SetChecked(self.actv)
     XB.Config:Write('TOGGLE_STATES', self.key, self.actv)
+    if self.actv then
+        self.Checked_Frame.texture:SetTexture(GenericIconOn)
+    else
+        self.Checked_Frame.texture:SetTexture(GenericIconOff)
+    end
 end
 
 function XB.Interface:GetToggle(toggle)

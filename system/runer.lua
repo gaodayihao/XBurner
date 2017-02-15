@@ -1,4 +1,4 @@
-local _, XB = ...
+local n_name, XB = ...
 XB.Runer   = {}
 
 local WaitStart                 = 0
@@ -36,6 +36,12 @@ local function IsMountedCheck()
         return true
     end
     return (SecureCmdOptionParse("[overridebar][vehicleui][possessbar,@vehicle,exists][mounted]true")) ~= "true"
+end
+
+local TargetUnit = function(Unit)
+    if XB.Unlocked then
+        TargetUnit(Unit)
+    end
 end
 
 --[[CastSpell(Unit,SpellID,FacingSkip,MovementSkip,SpamAllowed,KnownSkip)
@@ -238,6 +244,23 @@ function XB.Runer:Delay(delay)
 end
 
 function XB.Runer:Run(exe)
+    if XB.CR.CR.range > 0 and XB.Config:Read(n_name..'_Settings', 'at', true) then
+        if InCombatLockdown() and not XB.Checker:IsValidEnemy('target') and not UnitIsFriend('player','target') then
+            local enemies = XB.Area:Enemies(XB.CR.CR.range)
+            local enemy = nil
+            for i = 1,#enemies do
+                if XB.Runer.LastTarget and not UnitIsUnit(enemies[i].key,XB.Runer.LastTarget) or not XB.Runer.LastTarget then
+                    enemy = enemies[i].key
+                    break
+                end
+            end
+            if enemy then
+                TargetUnit(enemy)
+            end
+        end
+    end
+    if XB.CR.CR.pause() then return end
+    if XB.Queuer:Execute() then return end
     return exe()
 end
 
@@ -254,11 +277,10 @@ C_Timer.NewTicker(0.1, (function()
         return
     end
     if XB.Interface:GetToggle('mastertoggle') and not XB.CR.CRChanging and not IsAoEPending() then
-        if not UnitIsDeadOrGhost('player') and IsMountedCheck() and not XB.CR.CR.pause() then
+        if not UnitIsDeadOrGhost('player') and IsMountedCheck() then
             if XB.Checker:BetterStopCasting() then
                 SpellStopCasting()
             end
-            if XB.Queuer:Execute() then return end
             local exe = XB.CR.CR[InCombatLockdown()]
             XB.Runer:Run(exe)
         end

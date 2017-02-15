@@ -29,10 +29,13 @@ XB.Locale.zhCN = {
     CRS_ST = '战斗脚本设置'
   },
   Settings = {
+    combat = '战斗',
+    ui = '界面',
     option = '设置',
     bsize = '按钮大小',
     bpad = '按钮间距',
-    apply_bt = '应用'
+    apply_bt = '应用',
+    auto_target = "自动选择目标"
   },
   OM = {
     Option = '单位列表',

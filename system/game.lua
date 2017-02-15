@@ -27,6 +27,7 @@ local PlayerHasToy              = PlayerHasToy
 local GetInventoryItemID        = GetInventoryItemID
 local UnitCastingInfo           = UnitCastingInfo
 local UnitChannelInfo           = UnitChannelInfo
+local UnitTarget                = UnitTarget or (function() return 'player' end)
 
 local ItemSpamDelay             = 0
 
@@ -180,7 +181,7 @@ function XB.Game:HasThreat(Unit,PlayerUnit)
     local friend = XB.Healing:GetRoster()
     for guid,obj in pairs(friend) do
         local thisUnit = friend[guid].key
-        if (UnitInParty(thisUnit) or UnitInRaid(thisUnit)) and UnitThreatSituation(thisUnit,Unit)~=nil then
+        if (UnitInParty(thisUnit) or UnitInRaid(thisUnit)) and (UnitThreatSituation(thisUnit,Unit)~=nil or (UnitExists(UnitTarget(Unit)) and UnitIsUnit(UnitTarget(Unit),thisUnit))) then
             return true
         end
     end
