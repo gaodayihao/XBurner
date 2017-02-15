@@ -30,7 +30,7 @@ local function BuildArtifact()
     for name, spellID in pairs(artifacts) do
         local hasPerk,perkRank = getPerk(spellID, data)
         XB.Game.Artifact[name] = {
-            enable = hasPerk, 
+            enabled = hasPerk, 
             rank = perkRank
         }
     end

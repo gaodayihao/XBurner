@@ -1,6 +1,10 @@
 local _, XB = ...
 XB.Runer   = {}
 
+local WaitStart                 = 0
+local Wait                      = 0
+local Delay                     = 0
+
 -- Local stuff for speed
 local C_Timer                   = C_Timer
 local GetNetStats               = GetNetStats
@@ -51,7 +55,7 @@ eleventh        isChannel           该技能为引导技能，主要影响自�
 -- CastSpell("target",12345,true)
 --                         ( 1  ,    2  ,     3    ,     4      ,      5    ,   6     ,   7     ,    8       ,   9      ,  10  ,    11   )
 function XB.Runer:CastSpell(Unit,SpellID,FacingSkip,MovementSkip,SpamAllowed,KnownSkip,DeadCheck,DistanceSkip,usableSkip,noCast,isChannel)
-    if not SpellID then return false end
+    if not SpellID or not Unit then return false end
     local isChannel = isChannel or false
     if UnitExists(Unit) and not XB.Checker:ShouldStopCasting(SpellID, isChannel) and (not UnitIsDeadOrGhost(Unit) or DeadCheck) then
         -- define local var
@@ -76,8 +80,9 @@ function XB.Runer:CastSpell(Unit,SpellID,FacingSkip,MovementSkip,SpamAllowed,Kno
         elseif not XB.Checker:IsSafeToAttack(Unit) then -- enemy
             return false
         end
+        local castTime = XB.Game:GetCastTime(SpellID)
         -- if MovementSkip is false then we dont check it
-        if MovementSkip or not XB.Game:IsMoving("player") or XB.Checker:ByPassMove() or (XB.Game:GetCastTime(SpellID) == 0 and not isChannel) then
+        if MovementSkip or not XB.Game:IsMoving("player") or XB.Checker:ByPassMove() or (castTime == 0 and not isChannel) then
             -- if ability is ready and in range
             -- if getSpellCD(SpellID) < select(4,GetNetStats()) / 1000
             if (XB.Game:GetSpellCD(SpellID) < select(4,GetNetStats()) / 1000) and (DistanceSkip or XB.Game:IsInRange(SpellID,Unit)) then
@@ -99,6 +104,7 @@ function XB.Runer:CastSpell(Unit,SpellID,FacingSkip,MovementSkip,SpamAllowed,Kno
                                     local X,Y,Z = ObjectPosition(Unit)
                                     ClickPosition(X,Y,Z)
                                 end
+                                if castTime > 0 then XB.Runer:Delay() end
                                 return true
                             end
                         end
@@ -117,6 +123,7 @@ function XB.Runer:CastSpell(Unit,SpellID,FacingSkip,MovementSkip,SpamAllowed,Kno
                             local X,Y,Z = ObjectPosition(Unit)
                             ClickPosition(X,Y,Z)
                         end
+                        if castTime > 0 then XB.Runer:Delay() end
                         return true
                     end
                 end
@@ -219,6 +226,17 @@ function XB.Runer:CastGroundAtBestLocation(spellID, radius, minUnits, maxRange, 
     return false
 end
 
+function XB.Runer:Wait(wait)
+    local wait = wait or XB.Game:GCD()
+    WaitStart = GetTime()
+    Wait = wait
+end
+
+function XB.Runer:Delay(delay)
+    local delay = delay or 1
+    Delay = delay
+end
+
 function XB.Runer:Run(exe)
     return exe()
 end
@@ -228,8 +246,15 @@ XB.Core:WhenInGame(function()
 
 C_Timer.NewTicker(0.1, (function()
     --XB.Faceroll:Hide()
-    if XB.Interface:GetToggle('mastertoggle') and not XB.CR.CRChanging then
-        if not UnitIsDeadOrGhost('player') and IsMountedCheck() then
+    if Delay > 0 then
+        if not XB.Game:IsCasting() then Delay = Delay - 1 end
+        return
+    end
+    if WaitStart + Wait >= GetTime() then
+        return
+    end
+    if XB.Interface:GetToggle('mastertoggle') and not XB.CR.CRChanging and not IsAoEPending() then
+        if not UnitIsDeadOrGhost('player') and IsMountedCheck() and not XB.CR.CR.pause() then
             if XB.Checker:BetterStopCasting() then
                 SpellStopCasting()
             end

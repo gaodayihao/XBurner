@@ -4,6 +4,7 @@
 	<Script file="checker.lua" />
 	<Script file="class.lua" />
 	<Script file="abilities.lua" />
+	<Script file="equipSet.lua" />
 	<Script file="UI_elements.lua" />
 
 </Ui>

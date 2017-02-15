@@ -54,6 +54,7 @@ function XB.OM:Insert(Tbl, Obj, GUID)
         }
     elseif Test and UnitExists(Test.key) then
         Test.name = UnitName(Obj)
+        Test.key = Obj
     end
 end
 

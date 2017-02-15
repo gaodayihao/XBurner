@@ -22,7 +22,7 @@ local function BuildTalent()
     wipe(XB.Game.Talent)
     for name, spellID in pairs(talents) do
         XB.Game.Talent[name] = {
-            enable = not not tempTalents[spellID]
+            enabled = not not tempTalents[spellID]
         }
     end
 end

@@ -24,6 +24,9 @@ local UnitThreatSituation       = UnitThreatSituation
 local GetItemSpell              = GetItemSpell
 local GetItemCooldown           = GetItemCooldown
 local PlayerHasToy              = PlayerHasToy
+local GetInventoryItemID        = GetInventoryItemID
+local UnitCastingInfo           = UnitCastingInfo
+local UnitChannelInfo           = UnitChannelInfo
 
 local ItemSpamDelay             = 0
 
@@ -197,13 +200,29 @@ function XB.Game:UseItem(ItemID)
             end
         elseif ItemID>19 and (GetItemCount(ItemID) > 0 or PlayerHasToy(ItemID)) then
             if GetItemCooldown(ItemID)==0 then
-                UseItemByName(GetItemInfo(ItemID));
+                XB.Protected.UseItem(GetItemInfo(ItemID));
                 ItemSpamDelay = GetTime() + 1;
                 return true
             end
         end
     end
     return false
+end
+
+function XB.Game:HasEquiped(itemID)
+    --Scan Armor Slots to see if specified item was equiped
+    local foundItem = false
+    for i=1, 19 do
+        -- if there is an item in that slot
+        if GetInventoryItemID("player", i) ~= nil then
+            -- check if it matches 
+            if GetInventoryItemID("player", i) == itemID then
+                foundItem = true
+                break
+            end
+        end
+    end
+    return foundItem;
 end
 
 function XB.Game:IsAttacking()
@@ -217,6 +236,28 @@ function XB.Game:GCD()
     else
         return gcd
     end
+end
+
+function XB.Game:IsCastingSpell(spellID,unit)
+    if unit == nil then unit = "player" end
+    local name, _, _, _, _, _, _, _, _, spID = UnitCastingInfo(unit)
+    if name == nil then
+        name = UnitChannelInfo(unit)
+        return name ~=nil and name == GetSpellInfo(spellID)
+    end
+    if spID == spellID then
+        return true
+    end
+    return false
+end
+
+function XB.Game:IsCasting(unit)
+    if unit == nil then unit = "player" end
+    local name = UnitCastingInfo(unit)
+    if name == nil then
+        name = UnitChannelInfo(unit)
+    end
+    return name ~= nil
 end
 
 XB.Globals.Game = XB.Game

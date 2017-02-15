@@ -55,7 +55,7 @@ local function BuildBuffAndDebuff()
                 remains     = 0,
                 stack       = 0,
                 refresh     = true,
-                count       = function() return XB.Area:Debuff(SpellID) end
+                count       = function() return XB.Area:Debuff(SpellID,any) end
             }
             local name, duration, expires, caster, timeMod, stack = nil, nil, nil, nil ,nil ,nil
             if any then

@@ -42,7 +42,7 @@ local function BuildSpells()
                 local spellCast = v
                 local spellName = GetSpellInfo(v)
                 --if spellName == nil then print(v) end
-                if unit == nil and flag ~= 'best' then
+                if unit == nil then
                     if IsHelpfulSpell(spellName) then
                         unit = 'player'
                     else

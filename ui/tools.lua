@@ -388,19 +388,19 @@ end
 function XB.Interface:Noop() end
 
 local _Elements = {
-    header    = { func = 'Header', offset = -16 },
-    text      = { func = 'Text', offset = 0 },
-    rule      = { func = 'Rule', offset = -10 },
-    ruler     = { func = 'Rule', offset = -10 },
-    texture   = { func = 'Texture', offset = 0 },
-    checkbox  = { func = 'Checkbox', offset = -16 },
-    spinner   = { func = 'Spinner', offset = -19 },
-    checkspin = { func = 'Checkspin', offset = -19 },
-    combo     = { func = 'Combo', offset = -20 },
-    dropdown  = { func = 'Combo', offset = -20 },
-    button    = { func = 'Button', offset = -20 },
-    input     = { func = 'Input', offset = -16 },
-    spacer    = { func = 'Noop', offset = -10 },
+    header      = { func = 'Header', offset = -16 },
+    text        = { func = 'Text', offset = 0 },
+    rule        = { func = 'Rule', offset = -10 },
+    ruler       = { func = 'Rule', offset = -10 },
+    texture     = { func = 'Texture', offset = 0 },
+    checkbox    = { func = 'Checkbox', offset = -16 },
+    spinner     = { func = 'Spinner', offset = -19 },
+    checkspin   = { func = 'Checkspin', offset = -19 },
+    combo       = { func = 'Combo', offset = -20 },
+    dropdown    = { func = 'Combo', offset = -20 },
+    button      = { func = 'Button', offset = -20 },
+    input       = { func = 'Input', offset = -16 },
+    spacer      = { func = 'Noop', offset = -10 },
 }
 
 function XB.Interface:BuildElements(table, parent)
