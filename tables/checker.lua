@@ -13,6 +13,7 @@ local UnitClassification                    = UnitClassification
 local UnitCreatureType                      = UnitCreatureType
 local UnitExists                            = ObjectExists or UnitExists
 local UnitHealthMax                         = UnitHealthMax
+local UnitHealth                            = UnitHealth
 local UnitIsDeadOrGhost                     = UnitIsDeadOrGhost
 local UnitIsFriend                          = UnitIsFriend
 local UnitIsUnit                            = UnitIsUnit
@@ -309,13 +310,14 @@ function XB.Checker:IsValidEnemy(Unit)
         end
         local inAggroRange = XB.Protected.Distance(Unit) <= range
         local inCombat = UnitAffectingCombat("player")
+        local isWounded = UnitHealthMax(Unit) > UnitHealth(Unit)
         -- Only consider Units that are in 20yrs or I have targeted when not in Combat and not in an Instance.
         if not inCombat and not IsInInstance() and (inAggroRange or myTarget) then return true end
         local threat = XB.Game:HasThreat(Unit)
         -- Only consider Units that I have threat with or I am alone and have targeted when not in Combat and in an Instance.
         if not inCombat and IsInInstance() and (threat or (XB.Game:IsSolo() and myTarget)) then return true end
         -- Only consider Units that I have threat with or I can attack and have targeted or are dummies within 20yrds when in Combat.
-        if inCombat and (threat or myTarget or (XB.Checker:IsDummy(Unit) and inAggroRange)) then return true end
+        if inCombat and (threat or myTarget or (XB.Checker:IsDummy(Unit) and inAggroRange) or (isWounded and IsInInstance())) then return true end
     end
     return false
 end
