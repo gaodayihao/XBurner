@@ -67,9 +67,9 @@ XB.Locale.zhCN = {
     PowerInfusion = '能量灌注',
     Shadowfiend = '暗影恶魔',
     VoidTorrent = '虚空洪流',
-    VoidTorrent_Des = '开启/关闭自动使用虚空洪流\n同时显示目标死亡倒计时',
+    VoidTorrent_Des = '开启/关闭自动使用虚空洪流\n\n数字显示目标死亡倒计时',
     VoidEruption = '虚空爆发',
-    VoidEruption_Des = '开启/关闭自动使用虚空爆发\n同时显示当前进入虚空|cfffff569实际层数|r',
+    VoidEruption_Des = '开启/关闭自动使用虚空爆发\n\n数字显示当前进入虚空|cfffff569实际层数|r',
     Mindbender = '摧心魔',
   }
 }

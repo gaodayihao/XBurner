@@ -291,6 +291,8 @@ local InCombat = function()
         local bloodlustVar = 0 if XB.Game:HasBloodLust() then bloodlustVar = 1 end
         if insanityDrainStacks >= (cr:UI('C_PI_spin') + 2*eq_t19_2pcVar + 5*bloodlustVar+5*s2mbeltcheckVar)
             and (not talent.SurrenderToMadness.enabled or ttd('target') > s2mcheck - insanityDrainStacks + 61)
+            and useCD
+            and cr:UI('C_PI_check')
         then
             if cast.PowerInfusion() then return true end
         end
