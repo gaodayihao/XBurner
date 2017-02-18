@@ -38,6 +38,17 @@ local function BuildSpells()
                 return result
             end
 
+            function XB.Game.Spell.Cast.Racial()
+                if XB.Game:GetSpellCD(XB.Game:GetRacial()) == 0 then
+                    local race = XB.Game:GetRace()
+                    if race == "Pandaren" or race == "Goblin" then
+                        return XB.Runer:CastSpell('target',XB.Game:GetRacial(),true,true)
+                    else
+                        return XB.Runer:CastSpell('player',XB.Game:GetRacial(),true,true)
+                    end
+                end
+            end
+
             XB.Game.Spell.Cast[k] = function(unit, ...)
                 local spellCast = v
                 local spellName = GetSpellInfo(v)
@@ -64,15 +75,15 @@ local function BuildSpells()
                 local castGroundFlag = 'Enemy'
                 for i = 1, select('#', ...) do
                     local arg = select(i, ...)
-                    if arg == 'debug' then debug = true end
-                    if arg == 'best' then best = true end
-                    if arg == 'dead' then dead = true end
-                    if arg == 'aoe' then aoe = true end
-                    if arg == 'channel' then channel = true end
-                    if arg == 'known' then known = true end
-                    if arg == 'useable' then useable = true end
-                    if arg == 'heal' then castGroundFlag = 'Friendly' end
-                    if type(arg) == 'number' then
+                    if arg == 'debug' then debug = true
+                    elseif arg == 'best' then best = true
+                    elseif arg == 'dead' then dead = true
+                    elseif arg == 'aoe' then aoe = true
+                    elseif arg == 'channel' then channel = true
+                    elseif arg == 'known' then known = true
+                    elseif arg == 'useable' then useable = true
+                    elseif arg == 'heal' then castGroundFlag = 'Friendly'
+                    elseif type(arg) == 'number' then
                         if minUnits == nil then
                             minUnits = arg
                         else
@@ -85,7 +96,6 @@ local function BuildSpells()
 
                 -- /run print(XB.Game.Spell.Cast.MindBlast())
                 if (not select(2,IsUsableSpell(v)) or useable) and XB.Game:GetSpellCD(v) == 0 then
-
                     if best then
                         local minRange = select(5,GetSpellInfo(v))
                         local maxRange = select(6,GetSpellInfo(v))

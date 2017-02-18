@@ -270,8 +270,62 @@ function XB.Game:IsCasting(unit)
     return name ~= nil
 end
 
-XB.Globals.Game = XB.Game
--- XB.Globals.Game = { 
---     UnitID = XB.Game.UnitID,
---     IsMoving = XB.Game.IsMoving
--- }
+function XB.Game:HasBloodLust()
+    if XB.Game:GetUnitBuff("player",90355)              -- Ancient Hysteria
+        or XB.Game:GetUnitBuff("player",2825)           -- Bloodlust
+        or XB.Game:GetUnitBuff("player",146555)         -- Drums of Rage
+        or XB.Game:GetUnitBuff("player",32182)          -- Heroism
+        or XB.Game:GetUnitBuff("player",90355)          -- Netherwinds
+        or XB.Game:GetUnitBuff("player",80353)          -- Timewarp
+    then
+        return true
+    else
+        return false
+    end
+end
+
+function XB.Game:GetRace()
+    return select(2,UnitRace('player'))
+end
+
+function XB.Game:GetRacial()
+    local race = XB.Game:GetRace()
+    local classEn = select(2, UnitClass("player"))
+    local BloodElfRacial = 0
+    if race == "BloodElf" then
+        if classEn == "WARRIOR" then BloodElfRacial = 69179 end
+        if classEn == "MONK" then BloodElfRacial = 129597 end
+        if classEn == "MAGE" or self.class == "WARLOCK" then BloodElfRacial = 28730 end
+        if classEn == "DEATHKNIGHT" then BloodElfRacial = 50613 end
+        if classEn == "HUNTER" then BloodElfRacial = 80483 end
+        if classEn == "PALADIN" then BloodElfRacial = 155145 end
+        if classEn == "PRIEST" then BloodElfRacial = 232633 end
+        if classEn == "ROGUE" then BloodElfRacial = 25046 end
+        if classEn == "DEMONHUNTER" then BloodElfRacial = 202719 end
+    end
+    local racialSpells = {
+        -- Alliance
+        Dwarf    = 20594, -- Stoneform
+        Gnome    = 20589, -- Escape Artist
+        Draenei  = 59547, -- Gift of the Naaru
+        Human    = 59752, -- Every Man for Himself
+        NightElf = 58984, -- Shadowmeld
+        Worgen   = 68992, -- Darkflight
+        -- Horde
+        BloodElf = BloodElfRacial, -- Arcane Torrent
+        Goblin   = 69041, -- Rocket Barrage
+        Orc      = 20572, -- Blood Fury
+        Tauren   = 20549, -- War Stomp
+        Troll    = 26297, -- Berserking
+        Scourge  = 7744,  -- Will of the Forsaken
+        -- Both
+        Pandaren = 107079, -- Quaking Palm 
+    }
+    return racialSpells[race]
+end
+    
+-- XB.Globals.Game = XB.Game
+XB.Globals.Game = { 
+    UnitID = XB.Game.UnitID,
+    IsMoving = XB.Game.IsMoving
+}
