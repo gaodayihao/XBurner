@@ -35,11 +35,13 @@ local GUI = {
   {type = 'header', text = L('CD'), align = 'center'},
   {type = 'checkspin', text = L('PowerInfusion'), key = 'C_PI', default_check = true, default_spin = 10,max = 30,min = 1,step = 1},
   {type = 'checkbox', text = L('ShadowMend'), key = 'C_SM', default = true},
+  {type = 'spinner', text = L('VoidTorrent'), key = 'C_VT', default = 0,max = 60,min = 0,step = 5},
 
   {type = 'ruler'},{type = 'spacer'},
   {type = 'header', text = L('CD_S2M'), align = 'center'},
   {type = 'checkspin', text = L('PowerInfusion'), key = 'C_PI_S2M', default_check = true, default_spin = 55,max = 100,min = 1,step = 1},
   {type = 'checkbox', text = L('ShadowMend'), key = 'C_SM_S2M', default = true},
+  {type = 'spinner', text = L('VoidTorrent'), key = 'C_VT_S2M', default = 20,max = 60,min = 0,step = 5},
 }
 
 local CommonActionList = function()
@@ -58,19 +60,8 @@ local CommonActionList = function()
          movingStart = 0
     end
 
-    if XB.Game.Buff.Voidform().down then voidformStart = 0 voidformTimeStacks = 0 insanityDrainStacks = 0 end
-    if voidformStart == 0 and XB.Game.Buff.Voidform().up then voidformStart = GetTime() end
-
-    if voidformStart > 0 then
-        local temp = XB.Core:Round(GetTime() - voidformStart, 0)
-
-        if temp - voidformTimeStacks >=1 then
-            voidformTimeStacks = voidformTimeStacks + 1
-            if XB.Game.Buff.Dispersion().down and XB.Game.Buff.VoidTorrent().down then
-                insanityDrainStacks = insanityDrainStacks + 1
-            end
-        end
-    end
+    XB.Interface:UpdateToggleText('voidtorrent', ttd('target'))
+    XB.Interface:UpdateToggleText('voideruption', insanityDrainStacks)
 end
 
 local InCombat = function()
@@ -142,11 +133,11 @@ local InCombat = function()
             if cast.VampiricTouch('target','aoe') then return true end
         end
     -- void_eruption,if=insanity>=70|(talent.auspicious_spirits.enabled&insanity>=(65-shadowy_apparitions_in_flight*3))|set_bonus.tier19_4pc
-        if insanity >= 70 or (talent.AuspiciousSpirits.enabled and insanity >=65) or eq_t19_4pc then
+        if XB.Interface:GetToggle('voidEruption') and insanity >= 70 or (talent.AuspiciousSpirits.enabled and insanity >=65) or eq_t19_4pc then
             if cast.VoidEruption('player') then return true end
         end
     -- shadow_crash,if=talent.shadow_crash.enabled
-        if talent.ShadowCrash.enabled and cr:UI('A_SC') then
+        if talent.ShadowCrash.enabled and cr:UI('A_SC_check') then
             if cast.ShadowCrash('target','best') then return true end
         end
     -- mindbender,if=talent.mindbender.enabled&set_bonus.tier18_2pc
@@ -235,7 +226,19 @@ local InCombat = function()
     -- void_bolt
         if cast.VoidBolt('target','known') then return true end
     -- shadow_crash,if=talent.shadow_crash.enabled
+        if talent.ShadowCrash.enabled and cr:UI('A_SC_check') then
+            if cast.ShadowCrash('target','best') then return true end
+        end
     -- void_torrent,if=dot.shadow_word_pain.remains>5.5&dot.vampiric_touch.remains>5.5&(!talent.surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+60))
+        if XB.Interface:GetToggle('voidTorrent')
+            and debuff.ShadowWordPain().remains > 5.5 
+            and debuff.VampiricTouch().remains > 5.5
+            and insanityDrainStacks >= cr:UI('C_VT')
+            and (not talent.SurrenderToMadness.enabled or (ttd('target') > cr:UI('A_S2MCheck') - insanityDrainStacks + 60))
+        then
+            if cast.VoidTorrent() then return true end
+        end
+    -- 
     end -- Action List VF End
 
     local ActionListS2M = function()
@@ -257,12 +260,41 @@ local OutCombat = function()
 end
 
 local OnLoad = function()
+    XB.Interface:AddToggle({
+        key = 'voidtorrent',
+        name = L('VoidTorrent'),
+        text = L('VoidTorrent_Des'),
+        icon = game.Spell.SpellInfo.VoidTorrent,
+        default = true
+    })
+    XB.Interface:AddToggle({
+        key = 'voideruption',
+        name = L('VoidEruption'),
+        text = L('VoidEruption_Des'),
+        icon = game.Spell.SpellInfo.VoidEruption,
+        default = true
+    })
 end
 
 local OnUnload = function()
 end
 
 local Pause = function()
+
+    if XB.Game.Buff.Voidform().down then voidformStart = 0 voidformTimeStacks = 0 insanityDrainStacks = 0 end
+    if voidformStart == 0 and XB.Game.Buff.Voidform().up then voidformStart = GetTime() end
+
+    if voidformStart > 0 then
+        local temp = XB.Core:Round(GetTime() - voidformStart, 0)
+
+        if temp - voidformTimeStacks >=1 then
+            voidformTimeStacks = voidformTimeStacks + 1
+            if XB.Game.Buff.Dispersion().down and XB.Game.Buff.VoidTorrent().down then
+                insanityDrainStacks = insanityDrainStacks + 1
+            end
+        end
+    end
+
     if game:IsCasting() and not game:IsCastingSpell(game.Spell.SpellInfo.MindFlay) then return true end
     if UnitExists('target') and (not XB.Checker:IsValidEnemy('target') and not UnitIsFriend('player', 'target')) then return true end
     return false

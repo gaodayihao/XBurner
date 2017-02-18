@@ -13,6 +13,7 @@ XB.Locale.zhCN = {
     Cooldowns = '开启/关闭自动使用CD技能',
     CooldownsOnBoss = '开启/关闭仅在BOSS战中使用CD技能',
     AoE = '开启/关闭AOE模式',
+    CooldownsOnBoss = '开启/关闭仅在BOSS战中使用CD技能',
   },
   mainframe = {
     MasterToggle = '鼠标左键：启用/禁用\n鼠标右键：查看设置',
@@ -64,5 +65,9 @@ XB.Locale.zhCN = {
     CD_S2M = 'CD技能（S2M）',
     PowerInfusion = '能量灌注',
     ShadowMend = '暗影恶魔',
+    VoidTorrent = '虚空洪流',
+    VoidTorrent_Des = '开启/关闭自动使用虚空洪流\n同时显示目标死亡倒计时',
+    VoidEruption = '虚空爆发',
+    VoidEruption_Des = '开启/关闭自动使用虚空爆发\n同时显示当前进入虚空实际层数',
   }
 }

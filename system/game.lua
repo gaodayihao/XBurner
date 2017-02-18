@@ -254,7 +254,7 @@ function XB.Game:IsCastingSpell(spellID,unit)
 end
 
 function XB.Game:UseCooldown()
-    return XB.Interface:GetToggle('cooldowns') and (XB.Checker:IsBoss() or not XB.Interface:GetToggle('cooldownsOnBoss'))
+    return XB.Interface:GetToggle('cooldowns') and (XB.Checker:IsBoss() or not XB.Interface:GetToggle('cooldownsonboss'))
 end
 
 function XB.Game:UseAoE()

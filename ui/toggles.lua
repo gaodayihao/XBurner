@@ -9,6 +9,7 @@ XB.ButtonsPadding = 2
 
 local GenericIconOff = [[Interface\GLUES\CREDITS\Arakkoa1]]
 local GenericIconOn = [[Interface/BUTTONS/CheckButtonGlow]]
+local SharedMedia = LibStub("LibSharedMedia-3.0")
 
 -- Load Saved sizes
 XB.Core:WhenInGame(function()
@@ -73,10 +74,12 @@ local function CreateToggle(eval)
     temp:SetFrameLevel(1)
     temp:SetNormalFontObject("GameFontNormal")
     temp.texture = SetTexture(temp, eval.icon)
-    temp.actv = XB.Config:Read('TOGGLE_STATES', eval.key, false)
+    temp.actv = XB.Config:Read('TOGGLE_STATES', eval.key, eval.default or false)
     temp:SetChecked(temp.actv)
-    -- temp.Checked_texture = SetTexture(temp, eval.icon, true)
-    -- temp:SetCheckedTexture(temp.Checked_texture)
+    temp.text = temp:CreateFontString(nil,'OVERLAY')
+    temp.text:SetFont(SharedMedia:Fetch('font', 'Calibri Bold'), 20,'THICKOUTLINE')
+    temp.text:SetJustifyH("CENTER")
+    temp.text:SetTextColor(1,1,1,1)
     temp:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     temp:SetScript("OnClick", function(self, button) OnClick(self, eval.func, button) end)
     temp:SetScript("OnEnter", function(self) OnEnter(self, eval.name, eval.text) end)
@@ -87,6 +90,13 @@ local function CreateToggle(eval)
     tempFrame.texture = tempFrame:CreateTexture(temp, "OVERLAY")
     tempFrame.texture:SetAllPoints()
     tempFrame.texture:SetAlpha(100)
+
+    	-- 	_G["text"..Name] = _G["button"..Name]:CreateFontString(nil, "OVERLAY")
+		-- _G["text"..Name]:SetFont(br.data.settings.font,br.data.settings.fontsize,"THICKOUTLINE")
+		-- _G["text"..Name]:SetJustifyH("CENTER")
+		-- _G["text"..Name]:SetTextHeight(br.data.settings["buttonSize"]/3)
+		-- _G["text"..Name]:SetPoint("CENTER",3,-(br.data.settings["buttonSize"]/8))
+		-- _G["text"..Name]:SetTextColor(1,1,1,1)
     if temp.actv then
         tempFrame.texture:SetTexture(GenericIconOn)
     else
@@ -102,6 +112,11 @@ function XB.Interface:UpdateIcon(key, icon)
         icon = select(3,GetSpellInfo(icon))
     end
     Toggles[key].texture:SetTexture(icon)
+end
+
+function XB.Interface:UpdateToggleText(key, text)
+    if not text or not Toggles[key] then return end
+    Toggles[key].text:SetText(text)
 end
 
 function XB.Interface:AddToggle(eval)
@@ -126,6 +141,9 @@ function XB.Interface:RefreshToggles()
         temp[i]:SetSize(XB.ButtonsSize*0.8, XB.ButtonsSize*0.8)
         temp[i].Checked_Frame:SetSize(XB.ButtonsSize*1.67, XB.ButtonsSize*1.67)
         temp[i]:SetPoint("LEFT", mainframe.content, pos, 0)
+
+        temp[i].text:SetTextHeight(XB.ButtonsSize/3)
+        temp[i].text:SetPoint("CENTER",0,0)
     end
     mainframe.settings.width = #temp*(XB.ButtonsSize+XB.ButtonsPadding)-XB.ButtonsPadding - (XB.ButtonsSize*(#temp-2)) *0.1
     mainframe.settings.height = XB.ButtonsSize+18
