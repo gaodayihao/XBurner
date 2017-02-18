@@ -210,19 +210,17 @@ function XB.Runer:CastGroundAtBestLocation(spellID, radius, minUnits, maxRange, 
             end
             --Print(mX.." "..mY.." "..mZ)
             if mX ~= 0 and mY ~= 0 and mZ ~= 0 then
-                local spellName = GetSpellInfo(SpellID)
-                XB.Runer.LastCast = SpellID
-                XB.Interface:UpdateIcon('mastertoggle', SpellID)
-                XB.Protected.Cast(spellName,Unit)
+                XB.Runer.LastCast = spellID
+                XB.Interface:UpdateIcon('mastertoggle', spellID)
+                XB.Protected.Cast(GetSpellInfo(spellID))
                 ClickPosition(mX,mY,mZ)
                 return true
             end
         else
             local thisX,thisY,thisZ = ObjectPosition(goodUnits[1])
-            local spellName = GetSpellInfo(SpellID)
-            XB.Runer.LastCast = SpellID
-            XB.Interface:UpdateIcon('mastertoggle', SpellID)
-            XB.Protected.Cast(spellName,Unit)
+            XB.Runer.LastCast = spellID
+            XB.Interface:UpdateIcon('mastertoggle', spellID)
+            XB.Protected.Cast(GetSpellInfo(spellID))
             ClickPosition(thisX,thisY,thisZ);
             return true
         end
