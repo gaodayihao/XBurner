@@ -1,7 +1,7 @@
 local name, XB = ...
 
-XB.Version = "1.0"
-XB.Branch  = 'Alpha'
+XB.Version = "1.1"
+XB.Branch  = 'Beta'
 XB.Media   = 'Interface\\AddOns\\' .. name .. '\\Media\\'
 XB.Color   = 'FFFFFF'
 

@@ -25,7 +25,7 @@ local s2mbeltcheckVar           = 0
 local L                         = (function(key) return XB.Locale:TA('Shadow',key) end)
 
 local GUI = {
-  {type = 'header', text = L('Abiliteis'), align = 'center'},
+  {type = 'header', text = L('Abiliteis'), align = 'center'},{type = 'spacer'},
   {type = 'checkspin', text = L('BaS'), key = 'A_BaS', default_check = true, default_spin = 1.5,max = 5,min = 0,step = 0.5},
   {type = 'spinner', text = L('SwpT'), key = 'A_SWP_T', default = 6,max = 10,min = 1,step = 1},
   {type = 'spinner', text = L('VtT'), key = 'A_VT_T', default = 3,max = 10,min = 1,step = 1},
@@ -33,15 +33,15 @@ local GUI = {
   {type = 'spinner', text = L('S2MCheck'), key = 'A_S2MCheck', default = 90,max = 130,min = 50,step = 5},
   {type = 'checkspin', text = L('ActiveEnemies'), key = 'A_AE', default_check = false, default_spin = 5,max = 10,min = 1,step = 1},
 
-  {type = 'ruler'},{type = 'spacer'},
-  {type = 'header', text = L('CD'), align = 'center'},
+  {type = 'spacer'},{type = 'ruler'},
+  {type = 'header', text = L('CD'), align = 'center'},{type = 'spacer'},
   {type = 'checkspin', text = L('PowerInfusion'), key = 'C_PI', default_check = true, default_spin = 10,max = 30,min = 1,step = 1},
   {type = 'checkbox', text = L('Shadowfiend'), key = 'C_SF', default = true},
   {type = 'checkbox', text = L('Mindbender'), key = 'C_Mb', default = true},
   {type = 'spinner', text = L('VoidTorrent'), key = 'C_VT', default = 0,max = 60,min = 0,step = 5},
 
-  {type = 'ruler'},{type = 'spacer'},
-  {type = 'header', text = L('CD_S2M'), align = 'center'},
+  {type = 'spacer'},{type = 'ruler'},
+  {type = 'header', text = L('CD_S2M'), align = 'center'},{type = 'spacer'},
   {type = 'checkspin', text = L('PowerInfusion'), key = 'C_PI_S2M', default_check = true, default_spin = 55,max = 100,min = 1,step = 1},
   {type = 'checkbox', text = L('Shadowfiend'), key = 'C_SF_S2M', default = true},
   {type = 'checkbox', text = L('Mindbender'), key = 'C_Mb_S2M', default = true},

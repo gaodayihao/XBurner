@@ -16,13 +16,13 @@ local config = {
     config = {
             { type = 'header', text = n_name..' |r v'..XB.Version..' '..XB.Branch, size = 25, align = 'Center'},
 
-            {type = 'ruler'},{type = 'spacer'},
-            { type = 'header', text = L:TA('Settings', 'combat'), align = 'Center'},
+            {type = 'spacer'},
+            { type = 'header', text = L:TA('Settings', 'combat'), align = 'Center'},{type = 'spacer'},
             { type = 'checkbox', text = L:TA('Settings', 'auto_target'), key = 'at', default = true},
             { type = 'checkbox', text = L:TA('Settings', 'allow_player'), key = 'ap', default = false},
             
-            {type = 'ruler'},{type = 'spacer'},
-            { type = 'header', text = L:TA('Settings', 'ui'),align = 'Center'},
+            {type = 'spacer'},{type = 'ruler'},
+            { type = 'header', text = L:TA('Settings', 'ui'),align = 'Center'},{type = 'spacer'},
             { type = 'spinner', text = L:TA('Settings', 'bsize'), key = 'bsize', default = 40, step = 5, min = 25, callback = callback},
             { type = 'spinner', text = L:TA('Settings', 'bpad'), key = 'bpad', default = 2, step = 1, max = 10, callback = callback},
 
