@@ -496,7 +496,7 @@ local Pause = function()
         end
     end
 
-    XB.Interface:UpdateToggleText('voidtorrent', ttd('target'))
+    XB.Interface:UpdateToggleText('voidtorrent',XB.Core:Round(ttd('target')))
     XB.Interface:UpdateToggleText('voideruption', insanityDrainStacks)
 
     if game:IsCasting() and not game:IsCastingSpell(game.Spell.SpellInfo.MindFlay) then return true end

@@ -1,4 +1,4 @@
-local _, XB                                 = ...
+local n_name, XB                            = ...
 XB.Checker                                  = {}
 local GetInstanceLockTimeRemaining          = GetInstanceLockTimeRemaining
 local GetInstanceLockTimeRemainingEncounter = GetInstanceLockTimeRemainingEncounter
@@ -303,6 +303,7 @@ function XB.Checker:IsValidEnemy(Unit)
     local creatureType = UnitCreatureType(Unit)
     local trivial = creatureType == "Critter" or creatureType == "Non-combat Pet" or creatureType == "Gas Cloud" or creatureType == "Wild Pet"
     if UnitCanAttack("player",Unit) and not UnitIsDeadOrGhost(Unit) and not trivial and (creatureType ~= "Totem" or myTarget) then
+        if UnitIsPlayer(Unit) and not XB.Config:Read(n_name..'_Settings', 'ap', false) and not IsInInstance() then return false end
         local range = 20
         local inRaid = select(2,IsInInstance()) == "raid"
         if inRaid then

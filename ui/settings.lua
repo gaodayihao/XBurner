@@ -19,6 +19,7 @@ local config = {
             {type = 'ruler'},{type = 'spacer'},
             { type = 'header', text = L:TA('Settings', 'combat'), align = 'Center'},
             { type = 'checkbox', text = L:TA('Settings', 'auto_target'), key = 'at', default = true},
+            { type = 'checkbox', text = L:TA('Settings', 'allow_player'), key = 'ap', default = false},
             
             {type = 'ruler'},{type = 'spacer'},
             { type = 'header', text = L:TA('Settings', 'ui'),align = 'Center'},

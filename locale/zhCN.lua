@@ -36,7 +36,8 @@ XB.Locale.zhCN = {
     bsize = '按钮大小',
     bpad = '按钮间距',
     apply_bt = '应用',
-    auto_target = "自动选择目标"
+    auto_target = "自动选择目标",
+    allow_player = "野外允许攻击敌对玩家",
   },
   OM = {
     Option = '单位列表',
