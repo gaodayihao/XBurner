@@ -75,15 +75,15 @@ local function BuildSpells()
                 local castGroundFlag = 'Enemy'
                 for i = 1, select('#', ...) do
                     local arg = select(i, ...)
-                    if arg == 'debug' then debug = true
-                    elseif arg == 'best' then best = true
-                    elseif arg == 'dead' then dead = true
-                    elseif arg == 'aoe' then aoe = true
-                    elseif arg == 'channel' then channel = true
-                    elseif arg == 'known' then known = true
-                    elseif arg == 'useable' then useable = true
-                    elseif arg == 'heal' then castGroundFlag = 'Friendly'
-                    elseif type(arg) == 'number' then
+                    if arg == 'debug' then debug = true end
+                    if arg == 'best' then best = true end
+                    if arg == 'dead' then dead = true end
+                    if arg == 'aoe' then aoe = true end
+                    if arg == 'channel' then channel = true end
+                    if arg == 'known' then known = true end
+                    if arg == 'useable' then useable = true end
+                    if arg == 'heal' then castGroundFlag = 'Friendly' end
+                    if type(arg) == 'number' then
                         if minUnits == nil then
                             minUnits = arg
                         else

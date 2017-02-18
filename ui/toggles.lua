@@ -90,13 +90,6 @@ local function CreateToggle(eval)
     tempFrame.texture = tempFrame:CreateTexture(temp, "OVERLAY")
     tempFrame.texture:SetAllPoints()
     tempFrame.texture:SetAlpha(100)
-
-    	-- 	_G["text"..Name] = _G["button"..Name]:CreateFontString(nil, "OVERLAY")
-		-- _G["text"..Name]:SetFont(br.data.settings.font,br.data.settings.fontsize,"THICKOUTLINE")
-		-- _G["text"..Name]:SetJustifyH("CENTER")
-		-- _G["text"..Name]:SetTextHeight(br.data.settings["buttonSize"]/3)
-		-- _G["text"..Name]:SetPoint("CENTER",3,-(br.data.settings["buttonSize"]/8))
-		-- _G["text"..Name]:SetTextColor(1,1,1,1)
     if temp.actv then
         tempFrame.texture:SetTexture(GenericIconOn)
     else
