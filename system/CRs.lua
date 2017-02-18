@@ -13,8 +13,8 @@ function XB.CR:AddGUI(key, eval)
     local temp = {
         title = key,
         key = key,
-        width = 200,
-        height = 300,
+        width = 260,
+        height = 330,
         config = eval
     }
     XB.Interface:BuildGUI(temp):Hide()

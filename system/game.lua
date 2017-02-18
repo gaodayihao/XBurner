@@ -67,6 +67,7 @@ function XB.Game:IsMoving(Unit)
     else
         return false
     end
+    return false
 end
 
 function XB.Game:GetHP(Unit)
@@ -250,6 +251,14 @@ function XB.Game:IsCastingSpell(spellID,unit)
         return true
     end
     return false
+end
+
+function XB.Game:UseCooldown()
+    return XB.Interface:GetToggle('cooldowns') and (XB.Checker:IsBoss() or not XB.Interface:GetToggle('cooldownsOnBoss'))
+end
+
+function XB.Game:UseAoE()
+    return XB.Interface:GetToggle('aoe')
 end
 
 function XB.Game:IsCasting(unit)

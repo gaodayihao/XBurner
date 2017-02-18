@@ -93,7 +93,7 @@ function XB.Runer:CastSpell(Unit,SpellID,FacingSkip,MovementSkip,SpamAllowed,Kno
             -- if getSpellCD(SpellID) < select(4,GetNetStats()) / 1000
             if (XB.Game:GetSpellCD(SpellID) < select(4,GetNetStats()) / 1000) and (DistanceSkip or XB.Game:IsInRange(SpellID,Unit)) then
                 -- if spam is not allowed
-                if SpamAllowed == false then
+                if not SpamAllowed then
                     -- get our last/current cast
                     if TimersTable[SpellID] == nil or TimersTable[SpellID] <= GetTime() -0.6 then
                         if (FacingSkip or XB.Protected.Infront("player",Unit)) and (UnitIsUnit("player",Unit) or XB.Protected.LineOfSight("player",Unit)) then
@@ -101,11 +101,10 @@ function XB.Runer:CastSpell(Unit,SpellID,FacingSkip,MovementSkip,SpamAllowed,Kno
                                 return true
                             else 
                                 TimersTable[SpellID] = GetTime()
-                                local spellName = GetSpellInfo(SpellID)
                                 XB.Runer.LastCast = SpellID
                                 XB.Runer.LastTarget = Unit
                                 XB.Interface:UpdateIcon('mastertoggle', SpellID)
-                                XB.Protected.Cast(spellName,Unit)
+                                XB.Protected.Cast(GetSpellInfo(SpellID),Unit)
                                 if IsAoEPending() then
                                     local X,Y,Z = ObjectPosition(Unit)
                                     ClickPosition(X,Y,Z)
@@ -120,11 +119,10 @@ function XB.Runer:CastSpell(Unit,SpellID,FacingSkip,MovementSkip,SpamAllowed,Kno
                         return true
                     else
                         TimersTable[SpellID] = GetTime()
-                        local spellName = GetSpellInfo(SpellID)
                         XB.Runer.LastCast = SpellID
                         XB.Runer.LastTarget = Unit
                         XB.Interface:UpdateIcon('mastertoggle', SpellID)
-                        XB.Protected.Cast(spellName,Unit)
+                        XB.Protected.Cast(GetSpellInfo(SpellID),Unit)
                         if IsAoEPending() then
                             local X,Y,Z = ObjectPosition(Unit)
                             ClickPosition(X,Y,Z)

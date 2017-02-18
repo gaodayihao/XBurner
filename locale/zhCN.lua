@@ -51,5 +51,18 @@ XB.Locale.zhCN = {
     Description = '说明',
     Time = '时间',
     SpellCastSucceed = '成功施放技能',
+  },
+  Shadow = {
+    Abiliteis = '一般技能',
+    BaS = '身心合一',
+    SwpT = '暗言术:痛 目标上限',
+    VtT = '吸血鬼之触 目标上限',
+    ShadowCrash = '暗影冲撞',
+    S2MCheck = '自杀秒数',
+    ActiveEnemies = '激活目标',
+    CD = 'CD技能',
+    CD_S2M = 'CD技能（S2M）',
+    PowerInfusion = '能量灌注',
+    ShadowMend = '暗影恶魔',
   }
 }

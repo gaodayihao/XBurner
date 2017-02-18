@@ -3,7 +3,7 @@ local IsInRaid           = IsInRaid
 local GetNumGroupMembers = GetNumGroupMembers
 local IsInGroup          = IsInGroup
 
-XB.Protected.Cast = function(spell, target)
+XB.Protected.Cast = function(...)
   -- XB.Faceroll:Set(spell, target)
 end
 

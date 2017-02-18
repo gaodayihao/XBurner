@@ -52,44 +52,46 @@ local function BuildSpells()
                 if IsHelpfulSpell(spellName) and not UnitIsFriend('player', unit) then
                     unit = 'player'
                 end
-                -- /run print(XB.Game.Spell.Cast.MindBlast())
-                if not select(2,IsUsableSpell(v)) and XB.Game:GetSpellCD(v) == 0 then
-                    local minUnits,effectRng = nil,nil
-                    local debug = false
-                    local best = false
-                    local dead = false
-                    local aoe = false
-                    local channel = false
-                    local know = false
-                    local castGroundFlag = 'Enemy'
 
-                    for i = 1, select('#', ...) do
-                        local arg = select(i, ...)
-                        if arg == 'debug' then debug = true end
-                        if arg == 'best' then best = true end
-                        if arg == 'dead' then dead = true end
-                        if arg == 'aoe' then aoe = true end
-                        if arg == 'channel' then channel = true end
-                        if arg == 'know' then know = true end
-                        if arg == 'heal' then castGroundFlag = 'Friendly' end
-                        if type(arg) == 'number' then
-                            if minUnits == nil then
-                                minUnits = arg
-                            else
-                                effectRng = arg
-                            end
+                local minUnits,effectRng = nil,nil
+                local debug = false
+                local best = false
+                local dead = false
+                local aoe = false
+                local channel = false
+                local known = false
+                local useable = false
+                local castGroundFlag = 'Enemy'
+                for i = 1, select('#', ...) do
+                    local arg = select(i, ...)
+                    if arg == 'debug' then debug = true end
+                    if arg == 'best' then best = true end
+                    if arg == 'dead' then dead = true end
+                    if arg == 'aoe' then aoe = true end
+                    if arg == 'channel' then channel = true end
+                    if arg == 'known' then known = true end
+                    if arg == 'useable' then useable = true end
+                    if arg == 'heal' then castGroundFlag = 'Friendly' end
+                    if type(arg) == 'number' then
+                        if minUnits == nil then
+                            minUnits = arg
+                        else
+                            effectRng = arg
                         end
                     end
+                end
+                minUnits = minUnits or 1
+                effectRng = effectRng or 8
 
-                    minUnits = minUnits or 1
-                    effectRng = effectRng or 8
+                -- /run print(XB.Game.Spell.Cast.MindBlast())
+                if (not select(2,IsUsableSpell(v)) or useable) and XB.Game:GetSpellCD(v) == 0 then
 
                     if best then
                         local minRange = select(5,GetSpellInfo(v))
                         local maxRange = select(6,GetSpellInfo(v))
                         return XB.Runer:CastGroundAtBestLocation(spellCast,effectRng,minUnits,maxRange,minRange,castGroundFlag)
                     else
-                        return XB.Runer:CastSpell(unit,spellCast,aoe,false,false,know,dead,false,false,debug,channel)
+                        return XB.Runer:CastSpell(unit,spellCast,aoe,false,false,known,dead,false,useable,debug,channel)
                     end
                 end
                 return false
