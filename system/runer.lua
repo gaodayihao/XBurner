@@ -257,8 +257,8 @@ function XB.Runer:Run(exe)
             end
         end
     end
-    if XB.CR.CR.pause() then return end
-    if XB.Queuer:Execute() then return end
+    if XB.CR.CR.pause() then return true end
+    if XB.Queuer:Execute() then return true end
     return exe()
 end
 

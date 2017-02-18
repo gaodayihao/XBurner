@@ -65,37 +65,7 @@ local CommonActionList = function()
     end
 end
 
-local ActionListAnyEnemyShadowWordDeath = function(reaperOfSoulsVar, currentInsanityDrain, gcd, insanity, enemies)
-    local targetHP = XB.Game:GetHP('target')
-    if (targetHP > 35 and talent.ReaperOfSouls.enabled or targetHP > 20 and not talent.ReaperOfSouls.enabled) and buff.Voidform().up and cd.ShadowWordDeath().charges > 0 then
-        local s2mVar = 1 if buff.SurrenderToMadness().up then s2mVar = 2 end
-        if cd.ShadowWordDeath().charges == 2 or
-            (currentInsanityDrain*gcd>insanity
-                and (insanity - (currentInsanityDrain*gcd) + (15+15*reaperOfSoulsVar)*s2mVar)<100
-                and (not buff.PowerWordShield().up or not buff.SurrenderToMadness().up))
-        then
-            for i = 1,#enemies do
-                local enemy = enemies[i].key
-                local enemyHP = XB.Game:GetHP(enemy)
-                if enemyHP < 20 or enemyHP < 35 and talent.ReaperOfSouls.enabled then
-                    if cast.ShadowWordDeath(enemy,'aoe','useable') then return true end
-                end
-            end
-        end
-    end
-    if talent.TwistOfFate.enabled and buff.TwistOfFate().down then
-        for i = 1,#enemies do
-            local enemy = enemies[i].key
-            local enemyHP = XB.Game:GetHP(enemy)
-            if enemyHP < 35 then
-                if cast.ShadowWordPain(enemy,'aoe') then return true end
-            end
-        end
-    end
-end
-
 local InCombat = function()
-    if CommonActionList() then return true end
     if not XB.Checker:IsValidEnemy('target') then return false end
 
 -- function var
@@ -110,6 +80,36 @@ local InCombat = function()
     local currentInsanityDrain          = 6 + (insanityDrainStacks+0.2) * (2.0/3.0)
     local useCD                         = XB.Game:UseCooldown()
     local s2mcheck                      = cr:UI('A_S2MCheck')
+
+    local ActionListAnyEnemyShadowWordDeath = function()
+        local targetHP = XB.Game:GetHP('target')
+        if (targetHP > 35 and talent.ReaperOfSouls.enabled or targetHP > 20 and not talent.ReaperOfSouls.enabled) and buff.Voidform().up and cd.ShadowWordDeath().charges > 0 then
+            local s2mVar = 1 if buff.SurrenderToMadness().up then s2mVar = 2 end
+            if cd.ShadowWordDeath().charges == 2 or
+                (currentInsanityDrain*gcd>insanity
+                    and (insanity - (currentInsanityDrain*gcd) + (15+15*reaperOfSoulsVar)*s2mVar)<100
+                    and (not buff.PowerWordShield().up or not buff.SurrenderToMadness().up))
+            then
+                for i = 1,#enemies do
+                    local enemy = enemies[i].key
+                    local enemyHP = XB.Game:GetHP(enemy)
+                    if enemyHP < 20 or enemyHP < 35 and talent.ReaperOfSouls.enabled then
+                        if cast.ShadowWordDeath(enemy,'aoe','useable') then return true end
+                    end
+                end
+            end
+        end
+        if talent.TwistOfFate.enabled and buff.TwistOfFate().down then
+            for i = 1,#enemies do
+                local enemy = enemies[i].key
+                local enemyHP = XB.Game:GetHP(enemy)
+                if enemyHP < 35 then
+                    if cast.ShadowWordPain(enemy,'aoe') then return true end
+                end
+            end
+        end
+        return false
+    end
 
 -- Action List Main
     local ActionListMain = function()
@@ -195,6 +195,9 @@ local InCombat = function()
                 end
             end
         end
+
+        if ActionListAnyEnemyShadowWordDeath() then return true end
+
     -- shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&active_enemies<=2))&cooldown.shadow_word_death.charges=2&insanity<=(90-20*talent.reaper_of_souls.enabled)
         if (activeEnemies <= cr:UI('A_AE_spin') or talent.ReaperOfSouls.enabled)
             and cd.ShadowWordDeath().charges == 2
@@ -300,6 +303,9 @@ local InCombat = function()
         then
             if cast.Racial() then return true end
         end
+
+        if ActionListAnyEnemyShadowWordDeath() then return true end
+
     -- shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&active_enemies<=2))&current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+(10+20*talent.reaper_of_souls.enabled))<100
         if (activeEnemies <= cr:UI('A_AE_spin') or talent.ReaperOfSouls.enabled)
             and currentInsanityDrain * gcd > insanity
@@ -494,7 +500,13 @@ local Pause = function()
     XB.Interface:UpdateToggleText('voideruption', insanityDrainStacks)
 
     if game:IsCasting() and not game:IsCastingSpell(game.Spell.SpellInfo.MindFlay) then return true end
-    if UnitExists('target') and (not XB.Checker:IsValidEnemy('target') and not UnitIsFriend('player', 'target')) then return true end
+    if InCombatLockdown() 
+        and UnitExists('target')
+        and not XB.Checker:IsValidEnemy('target')
+        and not UnitIsFriend('player', 'target')
+    then
+        return true
+    end
     return false
 end
 
