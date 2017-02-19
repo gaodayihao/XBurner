@@ -9,6 +9,7 @@ local strupper    = strupper
 local DiesalGUI   = LibStub("DiesalGUI-1.0")
 local DiesalTools = LibStub("DiesalTools-1.0")
 local SharedMedia = LibStub("LibSharedMedia-3.0")
+local L           = (function(key) return XB.Locale:TA('Any',key) end)
 
 function XB.Interface:Header(element, parent, offset, table)
     local tmp = DiesalGUI:Create("FontString")
@@ -114,6 +115,15 @@ function XB.Interface:Checkbox(element, parent, offset, table)
         tmp_desc:SetJustifyH('LEFT')
         element.push = tmp_desc:GetStringHeight() + 5
     end
+    element.tooltip = element.tooltip or ''
+    local checkState = element.default and L('Checked') or L('Unchecked')
+    local tooltip = element.tooltip..'|r|n|n|n|n|cff00ff96'..L('CheckState')..'|r'..checkState..'|r|n'
+    tmp:SetEventListener('OnEnter', function()
+        GameTooltip:SetOwner(tmp.frame, "ANCHOR_LEFT")
+        GameTooltip:AddLine(tooltip, 255/255, 187/255, 00/255, true)
+        GameTooltip:Show()
+    end)
+    tmp:SetEventListener('OnLeave', function() GameTooltip:Hide() end)
     if element.key then
         usedGUIs[table.key].elements[element.key..'Text'] = tmp_text
         usedGUIs[table.key].elements[element.key] = tmp
@@ -173,6 +183,14 @@ function XB.Interface:Spinner(element, parent, offset, table)
         tmp_desc:SetJustifyH('LEFT')
         element.push = tmp_desc:GetStringHeight() + 5
     end
+    element.tooltip = element.tooltip or ''
+    local tooltip = element.tooltip..'|r|n|n|n|n|cff00ff96'..L('DefValue')..'|r'..tostring(element.default or 0)..'|r|n'
+    tmp_spin:SetEventListener('OnEnter', function()
+        GameTooltip:SetOwner(tmp_spin.frame, "ANCHOR_RIGHT")
+        GameTooltip:AddLine(tooltip, 255/255, 187/255, 00/255, true)
+        GameTooltip:Show()
+    end)
+    tmp_spin:SetEventListener('OnLeave', function() GameTooltip:Hide() end)
     if element.key then
         usedGUIs[table.key].elements[element.key..'Text'] = tmp_text
         usedGUIs[table.key].elements[element.key] = tmp_spin
@@ -240,6 +258,18 @@ function XB.Interface:Checkspin(element, parent, offset, table)
         tmp_desc:SetJustifyH('LEFT')
         element.push = tmp_desc:GetStringHeight() + 5
     end
+    element.tooltip = element.tooltip or ''
+    local checkState = element.default_check and L('Checked') or L('Unchecked')
+    local tooltip = element.tooltip..'|r|n|n|n|n|cff00ff96'..L('CheckState')..'|r'..checkState..'|r|n|cff00ff96'..L('DefValue')..'|r'..tostring(element.default_spin or 0)..'|r|n'
+    local OnEnter = function(self,al)
+        GameTooltip:SetOwner(self.frame, al)
+        GameTooltip:AddLine(tooltip, 255/255, 187/255, 00/255, true)
+        GameTooltip:Show()
+    end
+    tmp_spin:SetEventListener('OnEnter', function() OnEnter(tmp_spin,'ANCHOR_RIGHT') end)
+    tmp_check:SetEventListener('OnEnter', function() OnEnter(tmp_check,'ANCHOR_LEFT') end)
+    tmp_spin:SetEventListener('OnLeave', function() GameTooltip:Hide() end)
+    tmp_check:SetEventListener('OnLeave', function() GameTooltip:Hide() end)
     if element.key then
         usedGUIs[table.key].elements[element.key..'Text'] = tmp_text
         usedGUIs[table.key].elements[element.key..'Check'] = tmp_check
