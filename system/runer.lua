@@ -103,6 +103,8 @@ function XB.Runer:CastSpell(Unit,SpellID,FacingSkip,MovementSkip,SpamAllowed,Kno
                                 TimersTable[SpellID] = GetTime()
                                 XB.Runer.LastCast = SpellID
                                 XB.Runer.LastTarget = Unit
+                                local _,_,_,_,minRange,maxRange = GetSpellInfo(SpellID)
+                                if minRange == 0 and maxRange == 0 then Unit = nil end
                                 XB.Interface:UpdateIcon('mastertoggle', SpellID)
                                 XB.Protected.Cast(GetSpellInfo(SpellID),Unit)
                                 if IsAoEPending() then
@@ -121,6 +123,8 @@ function XB.Runer:CastSpell(Unit,SpellID,FacingSkip,MovementSkip,SpamAllowed,Kno
                         TimersTable[SpellID] = GetTime()
                         XB.Runer.LastCast = SpellID
                         XB.Runer.LastTarget = Unit
+                        local _,_,_,_,minRange,maxRange = GetSpellInfo(SpellID)
+                        if minRange == 0 and maxRange == 0 then Unit = nil end
                         XB.Interface:UpdateIcon('mastertoggle', SpellID)
                         XB.Protected.Cast(GetSpellInfo(SpellID),Unit)
                         if IsAoEPending() then
