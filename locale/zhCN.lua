@@ -10,6 +10,8 @@ XB.Locale.zhCN = {
     Checked = '选中',
     Unchecked = '不选中',
     DefValue = '默认值:',
+    Abiliteis = '一般技能',
+    CD = 'CD技能',
   },
   Keybindings = {
     MasterToggle = '开启/关闭 '..n_name,
@@ -63,21 +65,25 @@ XB.Locale.zhCN = {
     SpellCastSucceed = '成功施放技能',
   },
   Shadow = {
-    Abiliteis = '一般技能',
     BaS = '身心合一',
     SwpT = '暗言术:痛 目标上限',
     VtT = '吸血鬼之触 目标上限',
     ShadowCrash = '暗影冲撞',
     S2MCheck = '自杀秒数',
     ActiveEnemies = '激活目标',
-    CD = 'CD技能',
     CD_S2M = 'CD技能（S2M）',
     PowerInfusion = '能量灌注',
     Shadowfiend = '暗影恶魔',
     VoidTorrent = '虚空洪流',
     VoidTorrent_Des = '开启/关闭自动使用虚空洪流\n\n数字显示目标死亡倒计时',
     VoidEruption = '虚空爆发',
-    VoidEruption_Des = '开启/关闭自动使用虚空爆发\n\n数字显示当前进入虚空|cfffff569实际层数|r',
+    VoidEruption_Des = '开启/关闭自动使用虚空爆发\n\n数字显示当前进入虚空|cfffff569实际层数|r\n|cffff0000*|r当使用神器或消散时，层数停止增加',
     Mindbender = '摧心魔',
-  }
+    Dispersion = '消散',
+    ShadowWordDeath = '暗言术：灭',
+    MutiTarVoidBolt = '多目标虚空箭',
+  },
+  Affliction = {
+    Name = '[XB] - 术士 - 痛苦',
+  },
 }

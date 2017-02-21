@@ -151,6 +151,132 @@ XB.Abilities = {
             },
         },
     },
+     -- Warlock
+    [9] = {
+        -- Affliction
+        [265] = {
+            abilities                       = {
+                Agony                       = 980,
+                Corruption                  = 172,
+                DrainSoul                   = 198590,
+                GrimoireOfSacrifice         = 108503,
+                Haunt                       = 48181,
+                HowlOfTerror                = 5484,
+                PhantomSingularity          = 205179,
+                ReapSouls                   = 216698,
+                SeedOfCorruption            = 27243,
+                ShadowBolt                  = 232670,
+                SiphonLife                  = 63106,
+                SoulEffigy                  = 205178,
+                UnstableAffliction          = 30108,
+            },
+            artifacts                       = {
+                CompoundingHorror           = 199282,
+                CrystallineShadows          = 221862,
+                DrainedToAHusk              = 199120,
+                FatalEchoes                 = 199257,
+                HarvesterOfSouls            = 201424,
+                HideousCorruption           = 199112,
+                InherentlyUnstable          = 199152,
+                InimitableAgony             = 199111,
+                LongDarkNightOfTheSoul      = 199214,
+                Perdition                   = 199158,
+                ReapSouls                   = 216698,
+                SeedsOfDoom                 = 199153,
+                ShadowsOfTheFlesh           = 199212,
+                ShadowyIncantations         = 199163,
+                SoulFlame                   = 199471,
+                Soulstealer                 = 214934,
+                SweetSouls                  = 199220,
+                WrathOfConsumption          = 199472,
+            },
+            buffs                           = {
+                CompoundingHorror           = 199281,
+                EmpoweredLifeTap            = 235156,
+                DeadwindHarvester           = 216708,
+                DemonicPower                = 196099,
+                EmpoweredLifeTap            = 235156,
+                TormentedSouls              = 216695,
+            },
+            debuffs                         = {
+                Agony                       = 980,
+                Corruption                  = 146739,
+                Haunt                       = 221812,
+                SeedOfCorruption            = 27243,
+                SiphonLife                  = 63106,
+                UnstableAffliction1         = 233490,
+                UnstableAffliction2         = 233496,
+                UnstableAffliction3         = 233497,
+                UnstableAffliction4         = 233498,
+                UnstableAffliction5         = 233499,
+            },
+            talents                         = {
+                AbsoluteCorruption          = 196103,
+                Contagion                   = 196105,
+                EmpoweredLifeTap            = 235157,
+                GrimoireOfSacrifice         = 108503,
+                Haunt                       = 48181,
+                HowlOfTerror                = 5484,
+                ManaTap                     = 196104,
+                MaleficGrasp                = 235155,
+                PhantomSingularity          = 205179,
+                SiphonLife                  = 63106,
+                SoulConduit                 = 215941,
+                SoulEffigy                  = 205178,
+                SowTheSeeds                 = 196226,
+                WritheInAgony               = 196102,
+            },
+        },
+        -- Demonology
+        [266] = {
+            abilities                       = {
+
+            },
+            artifacts                       = {
+
+            },
+            buffs                           = {
+
+            },
+            debuffs                         = {
+
+            },
+            glyphs                          = {
+
+            },
+            talents                         = {
+
+            },
+        },
+        -- Destruction
+        [267] = {
+            abilities                       = {
+            },
+            artifacts                       = {
+            },
+            buffs                           = {
+            },
+            debuffs                         = {
+            },
+            talents                         = {
+            },
+        },
+        -- All
+        Shared = {
+            abilities                       = {
+            },
+            artifacts                       = {
+
+            },
+            buffs                           = {
+            },
+            debuffs                         = {
+
+            },
+            talents                         = {
+            },
+        },
+    },
     -- All
     Shared = {
         abilities                       = {

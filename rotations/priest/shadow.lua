@@ -6,46 +6,50 @@ local UnitExists                = ObjectExists or UnitExists
 local UnitIsFriend              = UnitIsFriend
 
 -- local var
-local buff                      = XB.Game.Buff
-local talent                    = XB.Game.Talent
-local game                      = XB.Game
-local movingStart               = 0
-local cast                      = XB.Game.Spell.Cast
-local cr                        = XB.CR
-local eq_t19_4pc                = false
-local eq_t19_2pc                = false
-local ttd                       = (function(Unit) return XB.CombatTracker:TimeToDie(Unit) end)
-local debuff                    = XB.Game.Debuff
-local cd                        = XB.Game.Spell.Cooldown
 local artifact                  = XB.Game.Artifact
+local buff                      = XB.Game.Buff
+local cast                      = XB.Game.Spell.Cast
+local cd                        = XB.Game.Spell.Cooldown
+local cr                        = XB.CR
+local debuff                    = XB.Game.Debuff
+local eq_t19_2pc                = false
+local eq_t19_4pc                = false
+local game                      = XB.Game
+local insanityDrainStacks       = 0
+local L                         = (function(key) return XB.Locale:TA('Shadow',key) end)
+local movingStart               = 0
+local s2mbeltcheckVar           = 0
+local talent                    = XB.Game.Talent
+local TargetRange               = 40
+local ttd                       = (function(Unit) return XB.CombatTracker:TimeToDie(Unit) end)
 local voidformStart             = 0
 local voidformTimeStacks        = 0
-local insanityDrainStacks       = 0
-local s2mbeltcheckVar           = 0
-local L                         = (function(key) return XB.Locale:TA('Shadow',key) end)
 
 local GUI = {
-  {type = 'header', text = L('Abiliteis'), align = 'center'},{type = 'spacer'},
+  {type = 'header', text = XB.Locale:TA('Any','Abiliteis'), align = 'center'},{type = 'spacer'},
   {type = 'checkspin', text = L('BaS'), key = 'A_BaS', default_check = true, default_spin = 1.5,max = 5,min = 0,step = 0.5},
   {type = 'spinner', text = L('SwpT'), key = 'A_SWP_T', default = 6,max = 10,min = 1,step = 1},
   {type = 'spinner', text = L('VtT'), key = 'A_VT_T', default = 3,max = 10,min = 1,step = 1},
   {type = 'checkspin', text = L('ShadowCrash'), key = 'A_SC', default_check = true, default_spin = 1,max = 5,min = 1,step = 1},
   {type = 'spinner', text = L('S2MCheck'), key = 'A_S2MCheck', default = 90,max = 130,min = 50,step = 5},
   {type = 'checkspin', text = L('ActiveEnemies'), key = 'A_AE', default_check = false, default_spin = 5,max = 10,min = 1,step = 1},
+  {type = 'checkspin', text = L('MutiTarVoidBolt'), key = 'A_MTVB', default_check = true, default_spin = 5.5,max = 10,min = 1,step = 0.5},
 
   {type = 'spacer'},{type = 'ruler'},
-  {type = 'header', text = L('CD'), align = 'center'},{type = 'spacer'},
-  {type = 'checkspin', text = L('PowerInfusion'), key = 'C_PI', default_check = true, default_spin = 10,max = 30,min = 1,step = 1},
+  {type = 'header', text = XB.Locale:TA('Any','CD'), align = 'center'},{type = 'spacer'},
+  {type = 'checkspin', text = L('PowerInfusion'), key = 'C_PI', default_check = true, default_spin = 12,max = 30,min = 1,step = 1},
   {type = 'checkbox', text = L('Shadowfiend'), key = 'C_SF', default = true},
   {type = 'checkbox', text = L('Mindbender'), key = 'C_Mb', default = true},
-  {type = 'spinner', text = L('VoidTorrent'), key = 'C_VT', default = 0,max = 60,min = 0,step = 5},
+  {type = 'spinner', text = L('VoidTorrent'), key = 'C_VT', default = 5,max = 20,min = 0,step = 5},
 
   {type = 'spacer'},{type = 'ruler'},
   {type = 'header', text = L('CD_S2M'), align = 'center'},{type = 'spacer'},
-  {type = 'checkspin', text = L('PowerInfusion'), key = 'C_PI_S2M', default_check = true, default_spin = 55,max = 100,min = 1,step = 1},
+  {type = 'checkspin', text = L('PowerInfusion'), key = 'C_PI_S2M', default_check = true, default_spin = 50,max = 100,min = 1,step = 1},
   {type = 'checkbox', text = L('Shadowfiend'), key = 'C_SF_S2M', default = true},
   {type = 'checkbox', text = L('Mindbender'), key = 'C_Mb_S2M', default = true},
-  {type = 'spinner', text = L('VoidTorrent'), key = 'C_VT_S2M', default = 20,max = 60,min = 0,step = 5},
+  {type = 'spinner', text = L('VoidTorrent'), key = 'C_VT_S2M', default = 10,max = 40,min = 0,step = 5},
+  {type = 'checkbox', text = L('Dispersion'), key = 'C_Dis_S2M', default =true},
+  {type = 'checkbox', text = L('ShadowWordDeath'), key = 'C_SWD_S2M', default =true},
 }
 
 local CommonActionList = function()
@@ -66,7 +70,8 @@ local CommonActionList = function()
 end
 
 local InCombat = function()
-    if not XB.Checker:IsValidEnemy('target') then return false end
+    if CommonActionList() then return true end
+    if not XB.Checker:IsValidEnemy('target') then return true end
 
 -- function var
     local gcd                           = game:GCD()
@@ -173,7 +178,7 @@ local InCombat = function()
         end
     -- shadow_crash,if=talent.shadow_crash.enabled
         if talent.ShadowCrash.enabled and cr:UI('A_SC_check') then
-            if cast.ShadowCrash('target','best') then return true end
+            if cast.ShadowCrash('target','best', cr:UI('A_SC_spin')) then return true end
         end
     -- mindbender,if=talent.mindbender.enabled&set_bonus.tier18_2pc
         -- T18????
@@ -252,9 +257,8 @@ local InCombat = function()
             if cast.ShadowWordVoid() then return true end
         end
     -- mind_flay,interrupt=1,chain=1
-        if not game:IsCastingSpell(game.Spell.SpellInfo.MindFlay) then
-            if cast.MindFlay('target','channel') then return true end
-        end
+        if game:IsCastingSpell(game.Spell.SpellInfo.MindFlay) then return true end
+        if cast.MindFlay('target','channel') then return true end
     -- shadow_word_pain
         if cast.ShadowWordPain('target','aoe') then return true end
     end -- Action List Main End
@@ -263,11 +267,27 @@ local InCombat = function()
     local ActionListVF = function()
     -- surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>=25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_death.up|buff.shadowy_insight.up)target.time_to_die<=variable.s2mcheck-(buff.insanity_drain_stacks.stack)
         -- Never automatic use S2M
-    -- void_bolt
-        if cast.VoidBolt('target','known') then return true end
+    -- MutiTarVoidBolt
+        if cr:UI('A_MTVB_check') then
+            if debuff.ShadowWordPain().remains > cr:UI('A_MTVB_spin') and debuff.VampiricTouch().remains > cr:UI('A_MTVB_spin') then
+                for i = 1,#enemies do
+                    local enemy = enemies[i].key
+                    if debuff.ShadowWordPain(enemy).remains < cr:UI('A_MTVB_spin') or debuff.VampiricTouch(enemy).remains < cr:UI('A_MTVB_spin')
+                    then
+                        if UnitIsUnit('target',enemy) or XB.Protected.Distance(enemy,'target') <= 8 then
+                            if cast.VoidBolt('target','known') then return true end
+                        else
+                            if cast.VoidBolt(enemy,'known') then return true end
+                        end
+                    end
+                end
+            end
+        else
+            if cast.VoidBolt('target','known') then return true end
+        end
     -- shadow_crash,if=talent.shadow_crash.enabled
         if talent.ShadowCrash.enabled and cr:UI('A_SC_check') then
-            if cast.ShadowCrash('target','best') then return true end
+            if cast.ShadowCrash('target','best', cr:UI('A_SC_spin')) then return true end
         end
     -- void_torrent,if=dot.shadow_word_pain.remains>5.5&dot.vampiric_touch.remains>5.5&(!talent.surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+60))
         if XB.Interface:GetToggle('voidTorrent')
@@ -434,15 +454,222 @@ local InCombat = function()
             end
         end
     -- mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action.void_bolt.usable|(current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+30)<100&cooldown.shadow_word_death.charges>=1))
-        if not game:IsCastingSpell(game.Spell.SpellInfo.MindFlay) then
-            if cast.MindFlay('target','channel') then return true end
-        end
+        if game:IsCastingSpell(game.Spell.SpellInfo.MindFlay)  then return true end
+        if cast.MindFlay('target','channel') then return true end
     -- shadow_word_pain
         if cast.ShadowWordPain('target','aoe') then return true end
     end -- Action List VF End
 
     local ActionListS2M = function()
+    -- void_bolt,if=buff.insanity_drain_stacks.stack<6&set_bonus.tier19_4pc
+        if eq_t19_4pc and insanityDrainStacks < 6 then
+            -- MutiTarVoidBolt
+            if cr:UI('A_MTVB_check') then
+                if debuff.ShadowWordPain().remains > cr:UI('A_MTVB_spin') and debuff.VampiricTouch().remains > cr:UI('A_MTVB_spin') then
+                    for i = 1,#enemies do
+                        local enemy = enemies[i].key
+                        if debuff.ShadowWordPain(enemy).remains < cr:UI('A_MTVB_spin') or debuff.VampiricTouch(enemy).remains < cr:UI('A_MTVB_spin')
+                        then
+                            if UnitIsUnit('target',enemy) or XB.Protected.Distance(enemy,'target') <= 8 then
+                                if cast.VoidBolt('target','known') then return true end
+                            else
+                                if cast.VoidBolt(enemy,'known') then return true end
+                            end
+                        end
+                    end
+                end
+            else
+                if cast.VoidBolt('target','known') then return true end
+            end
+        end
+    -- shadow_crash,if=talent.shadow_crash.enabled
+        -- ???
+    -- mindbender,if=talent.mindbender.enabled
+        if talent.Mindbender.enabled
+            and useCD
+            and cr:UI('C_Mb_S2M')
+        then
+            if cast.Mindbender() then return true end
+        end
+    -- void_torrent,if=dot.shadow_word_pain.remains>5.5&dot.vampiric_touch.remains>5.5&!buff.power_infusion.up
+        if XB.Interface:GetToggle('voidTorrent')
+            and debuff.ShadowWordPain().remains > 5.5
+            and debuff.VampiricTouch().remains > 5.5
+            and insanityDrainStacks >= cr:UI('C_VT_S2M')
+            and buff.PowerInfusion().down
+            and cr:UI('C_SWD_S2M')
+        then
+            if cast.VoidTorrent() then return true end
+        end
 
+        if cr:UI('C_SWD_S2M') and ActionListAnyEnemyShadowWordDeath() then return true end
+
+    -- shadow_word_death,if=current_insanity_drain*gcd.max>insanity&!buff.power_infusion.up&(insanity-(current_insanity_drain*gcd.max)+(20+40*talent.reaper_of_souls.enabled)<100)
+        if currentInsanityDrain*gcd >insanity 
+            and buff.PowerInfusion().down
+            and (insanity - (currentInsanityDrain*gcd) + (30 + 30 * reaperOfSoulsVar) < 100)
+            and cr:UI('C_SWD_S2M')
+        then
+            if cast.ShadowWordDeath('target','aoe') then return true end
+        end
+    -- power_infusion,if=cooldown.shadow_word_death.charges=0&cooldown.shadow_word_death.remains>3*gcd.max&buff.voidform.stack>50
+        if cr:UI('C_PI_S2M_check') and cd.ShadowWordDeath().charges == 0 and cd.ShadowWordDeath().remains > 3*gcd and insanityDrainStacks >= cr:UI('C_PI_S2M_spin') then
+            if cast.PowerInfusion() then return true end
+        end
+    -- MutiTarVoidBolt
+        if cr:UI('A_MTVB_check') then
+            if debuff.ShadowWordPain().remains > cr:UI('A_MTVB_spin') and debuff.VampiricTouch().remains > cr:UI('A_MTVB_spin') then
+                for i = 1,#enemies do
+                    local enemy = enemies[i].key
+                    if debuff.ShadowWordPain(enemy).remains < cr:UI('A_MTVB_spin') or debuff.VampiricTouch(enemy).remains < cr:UI('A_MTVB_spin')
+                    then
+                        if UnitIsUnit('target',enemy) or XB.Protected.Distance(enemy,'target') <= 8 then
+                            if cast.VoidBolt('target','known') then return true end
+                        else
+                            if cast.VoidBolt(enemy,'known') then return true end
+                        end
+                    end
+                end
+            end
+        else
+            if cast.VoidBolt('target','known') then return true end
+        end
+    -- shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&active_enemies<=2))&current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+(20+40*talent.reaper_of_souls.enabled))<100
+        if (activeEnemies <= cr:UI('A_AE_spin') or talent.ReaperOfSouls.enabled)
+            and currentInsanityDrain*gcd > insanity
+            and (insanity - (currentInsanityDrain*gcd) + (30+30*reaperOfSoulsVar)) <100
+            and cr:UI('C_SWD_S2M')
+        then
+            if cast.ShadowWordDeath('target','aoe') then return true end
+        end
+    -- wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable_in<gcd.max*0.28
+        if cd.VoidBolt().remains < gcd*0.28 then
+            XB.Runer:Wait(cd.VoidBolt().remains)
+            return true
+        end
+    -- dispersion,if=current_insanity_drain*gcd.max>insanity-5&!buff.power_infusion.up
+        if cr:UI('C_Dis_S2M') and currentInsanityDrain * gcd > insanity - 5 and buff.PowerInfusion().down then
+            if cast.Dispersion() then return true end
+        end
+    -- mind_blast,if=active_enemies<=4
+        if activeEnemies <= cr:UI('A_AE_spin') then
+            if cast.MindBlast() then return true end
+        end
+    -- wait,sec=action.mind_blast.usable_in,if=action.mind_blast.usable_in<gcd.max*0.28&active_enemies<=4
+        if activeEnemies <= cr:UI('A_AE_spin') and cd.MindBlast().remains < gcd*0.28 then
+            XB.Runer:Wait(cd.MindBlast().remains)
+            return true
+        end
+    -- shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&active_enemies<=2))&cooldown.shadow_word_death.charges=2
+        if (activeEnemies <= cr:UI('A_AE_spin') or talent.ReaperOfSouls.enabled)
+            and cd.ShadowWordDeath().charges == 2
+            and cr:UI('C_SWD_S2M')
+        then
+            if cast.ShadowWordDeath('target','aoe') then return true end
+        end
+    -- shadowfiend,if=!talent.mindbender.enabled,if=buff.voidform.stack>15
+        if useCD and cr:UI('C_SF_S2M') and not talent.Mindbender.enabled and buff.Voidform().stack > 15 then
+            if cast.Shadowfiend() then return true end
+        end
+    -- shadow_word_void,if=talent.shadow_word_void.enabled&(insanity-(current_insanity_drain*gcd.max)+50)<100
+        if talent.ShadowWordVoid.enabled and (insanity - (currentInsanityDrain*gcd)+50)<100 then
+            if cast.ShadowWordVoid() then return true end
+        end
+    -- shadow_word_pain,if=talent.misery.enabled&dot.shadow_word_pain.remains<gcd,moving=1,cycle_targets=1
+        if talent.Misery.enabled and game:IsMoving('player') and debuff.ShadowWordPain().remains < gcd then
+            if cast.ShadowWordPain('target','aoe') then return true end
+        end
+        if talent.Misery.enabled and game:IsMoving('player') and not forceSingle then
+            for i = 1,#enemies do
+                local enemy = enemies[i].key
+                if (swpCount < cr:UI('A_SWP_T') or debuff.ShadowWordPain(enemy).up)
+                    and debuff.ShadowWordPain(enemy).remains < gcd
+                then
+                    if cast.ShadowWordPain(enemy,'aoe') then return true end
+                end
+            end
+        end
+    -- vampiric_touch,if=talent.misery.enabled&(dot.vampiric_touch.remains<3*gcd.max|dot.shadow_word_pain.remains<3*gcd.max),cycle_targets=1
+        if talent.Misery.enabled and (debuff.ShadowWordPain().remains < 3*gcd or debuff.VampiricTouch().remains < 3*gcd) then
+            if cast.VampiricTouch('target','aoe') then return true end
+        end
+        if talent.Misery.enabled and not forceSingle then
+            for i = 1,#enemies do
+                local enemy = enemies[i].key
+                if (vtCount < cr:UI('A_VT_T') or (debuff.ShadowWordPain(enemy).up and debuff.VampiricTouch(enemy).up))
+                    and (debuff.ShadowWordPain(enemy).remains < 3*gcd or debuff.VampiricTouch(enemy).remains < 3*gcd)
+                then
+                    if cast.VampiricTouch(enemy,'aoe') then return true end
+                end
+            end
+            for i = 1,#enemies do
+                local enemy = enemies[i].key
+                if (swpCount < cr:UI('A_SWP_T') or debuff.ShadowWordPain(enemy).up)
+                    and debuff.ShadowWordPain(enemy).remains < gcd
+                then
+                    if cast.ShadowWordPain(enemy,'aoe') then return true end
+                end
+            end
+        end
+    -- shadow_word_pain,if=!talent.misery.enabled&!ticking&(active_enemies<5|talent.auspicious_spirits.enabled|talent.shadowy_insight.enabled|artifact.sphere_of_insanity.rank)
+        if not talent.Misery.enabled
+            and (activeEnemies <= cr:UI('A_AE_spin') or talent.AuspiciousSpirits.enabled or talent.ShadowyInsight.enabled or artifact.SphereOfInsanity.enabled)
+            and debuff.ShadowWordPain().down
+        then
+            if cast.ShadowWordPain('target','aoe') then return true end
+        end
+    -- vampiric_touch,if=!talent.misery.enabled&!ticking&(active_enemies<4|talent.sanlayn.enabled|(talent.auspicious_spirits.enabled&artifact.unleash_the_shadows.rank))
+        if not talent.Misery.enabled
+            and (activeEnemies <= cr:UI('A_AE_spin') or talent.Sanlayn.enabled or (talent.AuspiciousSpirits.enabled and artifact.UnleashTheShadows.enabled))
+            and debuff.VampiricTouch().down
+        then
+            if cast.VampiricTouch('target','aoe') then return true end
+        end
+    -- shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die>10&(active_enemies<5&(talent.auspicious_spirits.enabled|talent.shadowy_insight.enabled)),cycle_targets=1
+        if not talent.Misery.enabled
+            and swpCount < cr:UI('A_SWP_T')
+            and (activeEnemies <= cr:UI('A_AE_spin') and (talent.AuspiciousSpirits.enabled or talent.ShadowyInsight.enabled))
+            and not forceSingle
+        then
+            for i = 1,#enemies do
+                local enemy = enemies[i].key
+                if debuff.ShadowWordPain(enemy).down and ttd(enemy) > 10 then
+                    if cast.ShadowWordPain(enemy,'aoe') then return true end
+                end
+            end
+        end
+    -- vampiric_touch,if=!talent.misery.enabled&!ticking&target.time_to_die>10&(active_enemies<4|talent.sanlayn.enabled|(talent.auspicious_spirits.enabled&artifact.unleash_the_shadows.rank)),cycle_targets=1
+        if not talent.Misery.enabled
+            and not forceSingle
+            and (activeEnemies <= cr:UI('A_AE_spin') or talent.Sanlayn.enabled or (talent.AuspiciousSpirits.enabled and artifact.UnleashTheShadows.enabled))
+            and vtCount < cr:UI('A_VT_T')
+        then
+            for i = 1,#enemies do
+                local enemy = enemies[i].key
+                if debuff.VampiricTouch(enemy).down and ttd(enemy) > 10 then
+                    if cast.VampiricTouch(enemy,'aoe') then return true end
+                end
+            end
+        end
+    -- shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die>10&(active_enemies<5&artifact.sphere_of_insanity.rank),cycle_targets=1
+        if not talent.Misery.enabled
+            and swpCount < cr:UI('A_SWP_T')
+            and not forceSingle
+            and activeEnemies <= cr:UI('A_AE_spin')
+            and artifact.SphereOfInsanity.enabled
+        then
+            for i = 1,#enemies do
+                local enemy = enemies[i].key
+                if debuff.ShadowWordPain(enemy).down and ttd(enemy) > 10 then
+                    if cast.ShadowWordPain(enemy,'aoe') then return true end
+                end
+            end
+        end
+    -- mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action.void_bolt.usable|(current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+30)<100&cooldown.shadow_word_death.charges>=1))
+        if game:IsCastingSpell(game.Spell.SpellInfo.MindFlay)  then return true end
+        if cast.MindFlay('target','channel') then return true end
+    -- shadow_word_pain
+        if cast.ShadowWordPain('target','aoe') then return true end
     end -- Action List VF End
 
     if buff.Voidform().up and buff.SurrenderToMadness().up then
@@ -502,14 +729,7 @@ local Pause = function()
     XB.Interface:UpdateToggleText('voideruption', insanityDrainStacks)
 
     if game:IsCasting() and not game:IsCastingSpell(game.Spell.SpellInfo.MindFlay) then return true end
-    if InCombatLockdown() 
-        and UnitExists('target')
-        and not XB.Checker:IsValidEnemy('target')
-        and not UnitIsFriend('player', 'target')
-    then
-        return true
-    end
     return false
 end
 
-XB.CR:Add(258, '[XB] Priest - Shadow', InCombat, OutCombat, OnLoad, OnUnload, GUI, Pause, 40)
+XB.CR:Add(258, '[XB] Priest - Shadow', InCombat, OutCombat, OnLoad, OnUnload, GUI, Pause, TargetRange)
