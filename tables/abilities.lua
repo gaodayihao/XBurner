@@ -192,7 +192,6 @@ XB.Abilities = {
             },
             buffs                           = {
                 CompoundingHorror           = 199281,
-                EmpoweredLifeTap            = 235156,
                 DeadwindHarvester           = 216708,
                 DemonicPower                = 196099,
                 EmpoweredLifeTap            = 235156,
@@ -264,16 +263,20 @@ XB.Abilities = {
         -- All
         Shared = {
             abilities                       = {
+                LifeTap                     = 1454,
+                SoulHarvest                 = 196098,
             },
             artifacts                       = {
 
             },
             buffs                           = {
+                SoulHarvest                 = 196098,
             },
             debuffs                         = {
 
             },
             talents                         = {
+                SoulHarvest                 = 196098,
             },
         },
     },

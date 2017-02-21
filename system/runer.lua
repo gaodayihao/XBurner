@@ -166,7 +166,7 @@ function XB.Runer:CastGroundAtBestLocation(spellID, radius, minUnits, maxRange, 
                 --Print("ghost passed")
                 if UnitAffectingCombat(thisUnit) or (spellType == "Friendly" and XB.Game:GetHP(thisUnit) < 100) or XB.Checker:IsDummy(thisUnit) then
                     --Print("combat and dummy passed")
-                    table.insert(allUnitsInRange,thisUnit)
+                    allUnitsInRange[#allUnitsInRange+1] = thisUnit
                 end
             end
         end
@@ -183,7 +183,7 @@ function XB.Runer:CastGroundAtBestLocation(spellID, radius, minUnits, maxRange, 
             --Print(checkUnit.."?")
             if XB.Protected.Distance(thisUnit,checkUnit) < radius then
                 --Print(checkUnit.." added")
-                table.insert(unitsAroundThisUnit,checkUnit)
+                unitsAroundThisUnit[#unitsAroundThisUnit+1] = checkUnit
             end
         end
         if #goodUnits <= #unitsAroundThisUnit then
@@ -249,8 +249,9 @@ function XB.Runer:Run(exe)
             local enemies = XB.Area:Enemies(XB.CR.CR.range)
             local enemy = nil
             for i = 1,#enemies do
-                if XB.Runer.LastTarget and not UnitIsUnit(enemies[i].key,XB.Runer.LastTarget) or not XB.Runer.LastTarget then
-                    enemy = enemies[i].key
+                local tmp = enemies[i].key
+                if (XB.Runer.LastTarget and not UnitIsUnit(tmp,XB.Runer.LastTarget) or not XB.Runer.LastTarget) and not XB.Checker:ByPassTarget(tmp) then
+                    enemy = tmp
                     break
                 end
             end

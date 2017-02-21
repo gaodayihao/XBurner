@@ -149,6 +149,10 @@ local ByPassMove = {
     193223,             -- Surrender to Madness
 }
 
+local ByPassTarget = {
+    [103679]       = '',  -- Soul Effigy
+}
+
 local SpecialUnitVerify = {
     [103679] = { func = function(theUnit) return not UnitIsFriend(theUnit,"player") end },     -- Soul Effigy
     [95887] = { func = function(theUnit)
@@ -195,6 +199,10 @@ function XB.Checker:ByPassMove()
         end
     end
     return false
+end
+
+function XB.Checker:ByPassTarget(Unit)
+    return ByPassTarget[XB.Game:UnitID(Unit)] ~= nil
 end
 
 function XB.Checker:IsSafeToAttack(Unit)

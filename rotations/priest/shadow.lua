@@ -272,7 +272,8 @@ local InCombat = function()
             if debuff.ShadowWordPain().remains > cr:UI('A_MTVB_spin') and debuff.VampiricTouch().remains > cr:UI('A_MTVB_spin') then
                 for i = 1,#enemies do
                     local enemy = enemies[i].key
-                    if debuff.ShadowWordPain(enemy).remains < cr:UI('A_MTVB_spin') or debuff.VampiricTouch(enemy).remains < cr:UI('A_MTVB_spin')
+                    if debuff.ShadowWordPain(enemy).remains < cr:UI('A_MTVB_spin') and debuff.ShadowWordPain(enemy).up
+                        or debuff.VampiricTouch(enemy).remains < cr:UI('A_MTVB_spin') and debuff.VampiricTouch(enemy).up
                     then
                         if UnitIsUnit('target',enemy) or XB.Protected.Distance(enemy,'target') <= 8 then
                             if cast.VoidBolt('target','known') then return true end
@@ -282,9 +283,8 @@ local InCombat = function()
                     end
                 end
             end
-        else
-            if cast.VoidBolt('target','known') then return true end
         end
+        if cast.VoidBolt('target','known') then return true end
     -- shadow_crash,if=talent.shadow_crash.enabled
         if talent.ShadowCrash.enabled and cr:UI('A_SC_check') then
             if cast.ShadowCrash('target','best', cr:UI('A_SC_spin')) then return true end
@@ -468,7 +468,8 @@ local InCombat = function()
                 if debuff.ShadowWordPain().remains > cr:UI('A_MTVB_spin') and debuff.VampiricTouch().remains > cr:UI('A_MTVB_spin') then
                     for i = 1,#enemies do
                         local enemy = enemies[i].key
-                        if debuff.ShadowWordPain(enemy).remains < cr:UI('A_MTVB_spin') or debuff.VampiricTouch(enemy).remains < cr:UI('A_MTVB_spin')
+                        if debuff.ShadowWordPain(enemy).remains < cr:UI('A_MTVB_spin') and debuff.ShadowWordPain(enemy).up
+                            or debuff.VampiricTouch(enemy).remains < cr:UI('A_MTVB_spin') and debuff.VampiricTouch(enemy).up
                         then
                             if UnitIsUnit('target',enemy) or XB.Protected.Distance(enemy,'target') <= 8 then
                                 if cast.VoidBolt('target','known') then return true end
@@ -478,9 +479,8 @@ local InCombat = function()
                         end
                     end
                 end
-            else
-                if cast.VoidBolt('target','known') then return true end
             end
+            if cast.VoidBolt('target','known') then return true end
         end
     -- shadow_crash,if=talent.shadow_crash.enabled
         -- ???
@@ -521,7 +521,8 @@ local InCombat = function()
             if debuff.ShadowWordPain().remains > cr:UI('A_MTVB_spin') and debuff.VampiricTouch().remains > cr:UI('A_MTVB_spin') then
                 for i = 1,#enemies do
                     local enemy = enemies[i].key
-                    if debuff.ShadowWordPain(enemy).remains < cr:UI('A_MTVB_spin') or debuff.VampiricTouch(enemy).remains < cr:UI('A_MTVB_spin')
+                    if debuff.ShadowWordPain(enemy).remains < cr:UI('A_MTVB_spin') and debuff.ShadowWordPain(enemy).up
+                        or debuff.VampiricTouch(enemy).remains < cr:UI('A_MTVB_spin') and debuff.VampiricTouch(enemy).up
                     then
                         if UnitIsUnit('target',enemy) or XB.Protected.Distance(enemy,'target') <= 8 then
                             if cast.VoidBolt('target','known') then return true end
@@ -531,9 +532,8 @@ local InCombat = function()
                     end
                 end
             end
-        else
-            if cast.VoidBolt('target','known') then return true end
         end
+        if cast.VoidBolt('target','known') then return true end
     -- shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&active_enemies<=2))&current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+(20+40*talent.reaper_of_souls.enabled))<100
         if (activeEnemies <= cr:UI('A_AE_spin') or talent.ReaperOfSouls.enabled)
             and currentInsanityDrain*gcd > insanity

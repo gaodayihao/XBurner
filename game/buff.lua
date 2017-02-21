@@ -32,8 +32,9 @@ local function BuildBuffAndDebuff()
             end
             if name ~= nil then
                 buff.remains    = math.max((expires - GetTime()) / timeMod,0)
+                buff.remains    = buff.remains == 0 and 999 or buff.remains
                 buff.up         = true
-                buff.down       = not buff.up
+                buff.down       = false
                 buff.duration   = duration
                 buff.stack      = stack
                 buff.refresh    = buff.remains <= buff.duration * 0.3
@@ -65,8 +66,9 @@ local function BuildBuffAndDebuff()
             end
             if name ~= nil then
                 debuff.remains  = math.max((expires - GetTime()) / timeMod,0)
+                debuff.remains  = debuff.remains == 0 and 999 or debuff.remains
                 debuff.up       = true
-                debuff.down     = not debuff.up
+                debuff.down     = false
                 debuff.duration = duration
                 debuff.stack    = stack
                 debuff.refresh  = debuff.remains <= debuff.duration * 0.3

@@ -46,7 +46,7 @@ function XB.Area:Debuff(SpellID,Any)
     local enemies = XB.Area:Enemies()
     local count = 0
     for i=1,#enemies do
-        local enemy = enemies[i]
+        local enemy = enemies[i].key
         if Any and XB.Game:GetUnitDebuffAny(enemy,SpellID) then
             count = count + 1
         elseif not Any and XB.Game:GetUnitDebuff(enemy,SpellID) then

@@ -66,8 +66,8 @@ XB.Locale.zhCN = {
   },
   Shadow = {
     BaS = '身心合一',
-    SwpT = '暗言术:痛 目标上限',
-    VtT = '吸血鬼之触 目标上限',
+    SwpT = '多目标 暗言术:痛',
+    VtT = '多目标 吸血鬼之触',
     ShadowCrash = '暗影冲撞',
     S2MCheck = '自杀秒数',
     ActiveEnemies = '激活目标',
@@ -85,5 +85,8 @@ XB.Locale.zhCN = {
   },
   Affliction = {
     Name = '[XB] - 术士 - 痛苦',
+    AgonyMulTar = '多目标 痛苦术',
+    CorruptionMulTar = '多目标 腐蚀术',
+    SiphonLifeMulTar = '多目标 生命虹吸',
   },
 }

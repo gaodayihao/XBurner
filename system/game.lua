@@ -33,20 +33,30 @@ local ItemSpamDelay             = 0
 
 local function UnitBuffL(Target, SpellID, own)
     if Target == nil or not UnitExists(Target) then return nil end
-    local spellName = GetSpellInfo(SpellID)
-    local name,_,_,stack,_,duration,expires,caster,_,_,_,_,_,_,_,timeMod = UnitBuff(Target, spellName or spellName, nil, own and 'player')
-    return name, duration, expires, caster, timeMod, stack
+    local name,_,_,stack,_,duration,expires,caster,_,_,id,_,_,_,_,timeMod
+    for i=1,40 do
+        name,_,_,stack,_,duration,expires,caster,_,_,id,_,_,_,_,timeMod = UnitBuff(Target, i, nil)
+        if id == SpellID and (not own or caster == 'player') then
+            return name, duration, expires, caster, timeMod, stack
+        end
+    end
+    return nil
 end
 
 local function UnitDebuffL(Target, SpellID, own)
     if Target == nil or not UnitExists(Target) then return nil end
-    local spellName = GetSpellInfo(SpellID)
-    local name,_,_,stack,_,duration,expires,caster,_,_,_,_,_,_,_,timeMod = UnitDebuff(Target, spellName or spellName, nil, own and 'player')
-    return name, duration, expires, caster, timeMod, stack
+    local name,_,_,stack,_,duration,expires,caster,_,_,_,_,_,_,_,timeMod
+    for i=1,40 do
+        name,_,_,stack,_,duration,expires,caster,_,_,id,_,_,_,_,timeMod = UnitDebuff(Target, i, nil)
+        if id == SpellID and (not own or caster == 'player') then
+            return name, duration, expires, caster, timeMod, stack
+        end
+    end
+    return nil
 end
 
 function XB.Game:GetUnitBuffAny(Target,SpellID)
-    return UnitBuffL(Target, SpellID)
+    return UnitBuffL(Target, SpellID,false)
 end
 
 function XB.Game:GetUnitBuff(Target,SpellID)
@@ -54,7 +64,7 @@ function XB.Game:GetUnitBuff(Target,SpellID)
 end
 
 function XB.Game:GetUnitDebuffAny(Target,SpellID)
-    return UnitDebuffL(Target, SpellID)
+    return UnitDebuffL(Target, SpellID,false)
 end
 
 function XB.Game:GetUnitDebuff(Target,SpellID)
@@ -324,8 +334,8 @@ function XB.Game:GetRacial()
     return racialSpells[race]
 end
     
--- XB.Globals.Game = XB.Game
-XB.Globals.Game = { 
-    UnitID = XB.Game.UnitID,
-    IsMoving = XB.Game.IsMoving
-}
+XB.Globals.Game = XB.Game
+-- XB.Globals.Game = { 
+--     UnitID = XB.Game.UnitID,
+--     IsMoving = XB.Game.IsMoving
+-- }
