@@ -41,6 +41,7 @@ local GUI = {
   {type = 'checkbox', text = L('Shadowfiend'), key = 'C_SF', default = true},
   {type = 'checkbox', text = L('Mindbender'), key = 'C_Mb', default = true},
   {type = 'spinner', text = L('VoidTorrent'), key = 'C_VT', default = 5,max = 20,min = 0,step = 5},
+  {type = 'checkspin', text = L('BlessedDawnlightMedallion'), key = 'C_BDM', default_spin = 20,max = 50,min = 0,step = 5, default_check = true},
 
   {type = 'spacer'},{type = 'ruler'},
   {type = 'header', text = L('CD_S2M'), align = 'center'},{type = 'spacer'},
@@ -50,6 +51,7 @@ local GUI = {
   {type = 'spinner', text = L('VoidTorrent'), key = 'C_VT_S2M', default = 10,max = 40,min = 0,step = 5},
   {type = 'checkbox', text = L('Dispersion'), key = 'C_Dis_S2M', default =true},
   {type = 'checkbox', text = L('ShadowWordDeath'), key = 'C_SWD_S2M', default =true},
+  {type = 'checkspin', text = L('BlessedDawnlightMedallion'), key = 'C_BDM_S2M', default_spin = 50,max = 100,min = 0,step = 5, default_check = true},
 }
 
 local CommonActionList = function()
@@ -335,6 +337,14 @@ local InCombat = function()
         then
             if cast.ShadowWordDeath('target','aoe') then return true end
         end
+        if cr:UI('C_BDM_check') 
+            and game:HasEquiped(XB.EquipSet.BlessedDawnlightMedallion) 
+            and currentInsanityDrain * gcd > insanity - 5 
+            and buff.PowerInfusion().down
+            and insanityDrainStacks > cr:UI('C_BDM_spin') 
+        then
+            if XB.Protected.UseInvItem(2) then XB.Runer.Wait(0.15) return true end
+        end
     -- wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable_in<gcd.max*0.28
         if cd.VoidBolt().remains < gcd*0.28 then
             XB.Runer:Wait(cd.VoidBolt().remains)
@@ -513,7 +523,10 @@ local InCombat = function()
             if cast.ShadowWordDeath('target','aoe') then return true end
         end
     -- power_infusion,if=cooldown.shadow_word_death.charges=0&cooldown.shadow_word_death.remains>3*gcd.max&buff.voidform.stack>50
-        if cr:UI('C_PI_S2M_check') and cd.ShadowWordDeath().charges == 0 and cd.ShadowWordDeath().remains > 3*gcd and insanityDrainStacks >= cr:UI('C_PI_S2M_spin') then
+        if cr:UI('C_PI_S2M_check') 
+            and cd.ShadowWordDeath().charges == 0 
+            and cd.ShadowWordDeath().remains > 3*gcd 
+            and insanityDrainStacks >= cr:UI('C_PI_S2M_spin') then
             if cast.PowerInfusion() then return true end
         end
     -- MutiTarVoidBolt
@@ -546,6 +559,14 @@ local InCombat = function()
         if cd.VoidBolt().remains < gcd*0.28 then
             XB.Runer:Wait(cd.VoidBolt().remains)
             return true
+        end
+        if cr:UI('C_BDM_S2M_check') 
+            and game:HasEquiped(XB.EquipSet.BlessedDawnlightMedallion) 
+            and currentInsanityDrain * gcd > insanity - 5 
+            and buff.PowerInfusion().down
+            and insanityDrainStacks > cr:UI('C_BDM_S2M_spin') 
+        then
+            if XB.Protected.UseInvItem(2) then XB.Runer.Wait(0.15) return true end
         end
     -- dispersion,if=current_insanity_drain*gcd.max>insanity-5&!buff.power_infusion.up
         if cr:UI('C_Dis_S2M') and currentInsanityDrain * gcd > insanity - 5 and buff.PowerInfusion().down then
@@ -674,11 +695,9 @@ local InCombat = function()
 
     if buff.Voidform().up and buff.SurrenderToMadness().up then
         if ActionListS2M() then return true end
-    end
-    if buff.Voidform().up then
+    elseif buff.Voidform().up then
         if ActionListVF() then return true end
-    end
-    if ActionListMain() then return true end
+    elseif ActionListMain() then return true end
 end
 
 local OutCombat = function()
@@ -729,6 +748,7 @@ local Pause = function()
     XB.Interface:UpdateToggleText('voideruption', insanityDrainStacks)
 
     if game:IsCasting() and not game:IsCastingSpell(game.Spell.SpellInfo.MindFlay) then return true end
+    if XB.Game.Buff.Dispersion().up then return true end
     return false
 end
 

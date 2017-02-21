@@ -82,6 +82,8 @@ XB.Locale.zhCN = {
     Dispersion = '消散',
     ShadowWordDeath = '暗言术：灭',
     MutiTarVoidBolt = '多目标虚空箭',
+    BlessedDawnlightMedallion = '祝福晨光垂饰',
+    Name = '[XB] - 牧师 - 暗影',
   },
   Affliction = {
     Name = '[XB] - 术士 - 痛苦',

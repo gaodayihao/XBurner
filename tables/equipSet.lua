@@ -102,6 +102,7 @@ XB.EquipSet = {
             [15] = 138375, -- back
         },
     },
+    BlessedDawnlightMedallion   = 130234,
     ReapAndSow                  = 144364, -- 播种与收获
     HoodOfEternalDisdain        = 132394, -- 永恒蔑视兜帽
     PowerCordOfLethtendris      = 132457, -- 蕾瑟塔蒂丝的能量之索
