@@ -78,18 +78,32 @@ function XB.CR:Set(Spec, Name)
     if self.CR.unload then
         self.CR.unload()
     end
-    local _, englishClass, classIndex  = UnitClass('player')
-    local a, b = englishClass:sub(1, 1):upper(), englishClass:sub(2):lower()
-    local classCR = '[XB] '..a..b..' - Basic'
-    if not CRs[Spec] or not CRs[Spec][Name] then
-        Name = classCR
+    self.CR = {}
+    local _, _, classIndex  = UnitClass('player')
+    if CRs[Spec] then
+        if Name ~= nil and CRs[Spec][Name] then
+            self.CR = CRs[Spec][Name]
+        else
+            for k,v in pairs(CRs[Spec]) do
+                self.CR = CRs[Spec][k]
+                break
+            end
+        end
+    elseif CRs[classIndex] then
         Spec = classIndex
+        for k,v in pairs(CRs[classIndex]) do
+            self.CR = CRs[classIndex][k]
+            break
+        end
     end
-    self.CR = CRs[Spec][Name]
-    XB.Config:Write('SELECTED', Spec, Name)
-    XB.Interface:SetCheckedCR(Name)
-    XB.Interface:ResetToggles()
-    self.CR.load()
+    if self.CR.Name then
+        XB.Config:Write('SELECTED', Spec, self.CR.Name)
+        XB.Interface:SetCheckedCR(self.CR.Name)
+        XB.Interface:ResetToggles()
+        self.CR.load()
+    else
+        XB.Core:Print('CR Not Found.')
+    end
 end
 
 function XB.CR:GetList(Spec)
@@ -116,10 +130,20 @@ end
 
 local function SetCR()
     local Spec = ActiveSpec
-    local englishClass  = select(2, UnitClass('player'))
-    local a, b = englishClass:sub(1, 1):upper(), englishClass:sub(2):lower()
-    local classCR = '[XB] '..a..b..' - Basic'
-    local last = XB.Config:Read('SELECTED', Spec, classCR)
+    local crName = nil
+    local _, _, classIndex  = UnitClass('player')
+    if CRs[Spec] then
+        for k in pairs(CRs[Spec]) do
+            crName = k
+            break
+        end
+    elseif CRs[classIndex] then
+        for k in pairs(CRs[classIndex]) do
+            crName = k
+            break
+        end
+    end
+    local last = XB.Config:Read('SELECTED', Spec, crName)
     BuildCRs(Spec, last)
     XB.CR:Set(Spec, last)
 end

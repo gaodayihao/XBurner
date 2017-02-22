@@ -117,7 +117,7 @@ function XB.Interface:Checkbox(element, parent, offset, table)
     end
     element.tooltip = element.tooltip or ''
     local checkState = element.default and L('Checked') or L('Unchecked')
-    local tooltip = element.tooltip..'|r|n|n|n|n|cff00ff96'..L('CheckState')..'|r'..checkState..'|r|n'
+    local tooltip = element.tooltip..'|r|n|n|cff00ff96'..L('CheckState')..'|r'..checkState..'|r|n'
     tmp:SetEventListener('OnEnter', function()
         GameTooltip:SetOwner(tmp.frame, "ANCHOR_LEFT")
         GameTooltip:AddLine(tooltip, 255/255, 187/255, 00/255, true)
@@ -184,7 +184,7 @@ function XB.Interface:Spinner(element, parent, offset, table)
         element.push = tmp_desc:GetStringHeight() + 5
     end
     element.tooltip = element.tooltip or ''
-    local tooltip = element.tooltip..'|r|n|n|n|n|cff00ff96'..L('DefValue')..'|r'..tostring(element.default or 0)..'|r|n'
+    local tooltip = element.tooltip..'|r|n|n|cff00ff96'..L('DefValue')..'|r'..tostring(element.default or 0)..'|r|n'
     tmp_spin:SetEventListener('OnEnter', function()
         GameTooltip:SetOwner(tmp_spin.frame, "ANCHOR_RIGHT")
         GameTooltip:AddLine(tooltip, 255/255, 187/255, 00/255, true)
@@ -260,7 +260,7 @@ function XB.Interface:Checkspin(element, parent, offset, table)
     end
     element.tooltip = element.tooltip or ''
     local checkState = element.default_check and L('Checked') or L('Unchecked')
-    local tooltip = element.tooltip..'|r|n|n|n|n|cff00ff96'..L('CheckState')..'|r'..checkState..'|r|n|cff00ff96'..L('DefValue')..'|r'..tostring(element.default_spin or 0)..'|r|n'
+    local tooltip = element.tooltip..'|r|n|n|cff00ff96'..L('CheckState')..'|r'..checkState..'|r|n|cff00ff96'..L('DefValue')..'|r'..tostring(element.default_spin or 0)..'|r|n'
     local OnEnter = function(self,al)
         GameTooltip:SetOwner(self.frame, al)
         GameTooltip:AddLine(tooltip, 255/255, 187/255, 00/255, true)

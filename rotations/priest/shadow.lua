@@ -27,13 +27,13 @@ local voidformTimeStacks        = 0
 
 local GUI = {
   {type = 'header', text = XB.Locale:TA('Any','Abiliteis'), align = 'center'},{type = 'spacer'},
-  {type = 'checkspin', text = L('BaS'), key = 'A_BaS', default_check = true, default_spin = 1.5,max = 5,min = 0,step = 0.5},
-  {type = 'spinner', text = L('SwpT'), key = 'A_SWP_T', default = 6,max = 10,min = 1,step = 1},
-  {type = 'spinner', text = L('VtT'), key = 'A_VT_T', default = 3,max = 10,min = 1,step = 1},
-  {type = 'checkspin', text = L('ShadowCrash'), key = 'A_SC', default_check = true, default_spin = 1,max = 5,min = 1,step = 1},
-  {type = 'spinner', text = L('S2MCheck'), key = 'A_S2MCheck', default = 90,max = 130,min = 50,step = 5},
-  {type = 'checkspin', text = L('ActiveEnemies'), key = 'A_AE', default_check = false, default_spin = 5,max = 10,min = 1,step = 1},
-  {type = 'checkspin', text = L('MutiTarVoidBolt'), key = 'A_MTVB', default_check = true, default_spin = 5.5,max = 10,min = 1,step = 0.5},
+  {type = 'checkspin', text = L('BaS'), key = 'A_BaS', default_check = true, default_spin = 1.5,max = 5,min = 0,step = 0.5,tooltip = L('BaS_tip')},
+  {type = 'spinner', text = L('SwpT'), key = 'A_SWP_T', default = 6,max = 10,min = 1,step = 1,tooltip = L('SwpT_tip')},
+  {type = 'spinner', text = L('VtT'), key = 'A_VT_T', default = 3,max = 10,min = 1,step = 1,tooltip = L('VtT_tip')},
+  {type = 'checkspin', text = L('ShadowCrash'), key = 'A_SC', default_check = true, default_spin = 1,max = 5,min = 1,step = 1,tooltip = L('ShadowCrash_tip')},
+  {type = 'spinner', text = L('S2MCheck'), key = 'A_S2MCheck', default = 90,max = 130,min = 50,step = 5,tooltip = L('S2MCheck_tip')},
+  {type = 'checkspin', text = L('ActiveEnemies'), key = 'A_AE', default_check = false, default_spin = 5,max = 10,min = 1,step = 1,tooltip = L('ActiveEnemies_tip')},
+  {type = 'checkspin', text = L('MultiTarVoidBolt'), key = 'A_MTVB', default_check = true, default_spin = 5.5,max = 10,min = 1,step = 0.5,tooltip = L('MultiTarVoidBolt_tip')},
 
   {type = 'spacer'},{type = 'ruler'},
   {type = 'header', text = XB.Locale:TA('Any','CD'), align = 'center'},{type = 'spacer'},
@@ -49,9 +49,9 @@ local GUI = {
   {type = 'checkbox', text = L('Shadowfiend'), key = 'C_SF_S2M', default = true},
   {type = 'checkbox', text = L('Mindbender'), key = 'C_Mb_S2M', default = true},
   {type = 'spinner', text = L('VoidTorrent'), key = 'C_VT_S2M', default = 10,max = 40,min = 0,step = 5},
-  {type = 'checkbox', text = L('Dispersion'), key = 'C_Dis_S2M', default =true},
-  {type = 'checkbox', text = L('ShadowWordDeath'), key = 'C_SWD_S2M', default =true},
-  {type = 'checkspin', text = L('BlessedDawnlightMedallion'), key = 'C_BDM_S2M', default_spin = 50,max = 100,min = 0,step = 5, default_check = true},
+  {type = 'checkspin', text = L('Dispersion'), key = 'C_Dis_S2M', default_spin = 60,max = 110,min = 0,step = 5, default_check = true},
+  {type = 'checkbox', text = L('ShadowWordDeath'), key = 'C_SWD_S2M', default = true},
+  {type = 'checkspin', text = L('BlessedDawnlightMedallion'), key = 'C_BDM_S2M', default_spin = 50,max = 110,min = 0,step = 5, default_check = true},
 }
 
 local CommonActionList = function()
@@ -90,9 +90,10 @@ local InCombat = function()
 
     local ActionListAnyEnemyShadowWordDeath = function()
         local targetHP = XB.Game:GetHP('target')
-        if (targetHP > 35 and talent.ReaperOfSouls.enabled or targetHP > 20 and not talent.ReaperOfSouls.enabled) and buff.Voidform().up and cd.ShadowWordDeath().charges > 0 then
+        if (targetHP >= 35 and talent.ReaperOfSouls.enabled or targetHP >= 20 and not talent.ReaperOfSouls.enabled) and buff.Voidform().up and cd.ShadowWordDeath().charges > 0 then
             local s2mVar = 1 if buff.SurrenderToMadness().up then s2mVar = 2 end
-            if cd.ShadowWordDeath().charges == 2 or
+            if (cd.ShadowWordDeath().charges == 2 and insanity + (15+15*reaperOfSoulsVar)*s2mVar < 100)
+                or
                 (currentInsanityDrain*gcd>insanity
                     and (insanity - (currentInsanityDrain*gcd) + (15+15*reaperOfSoulsVar)*s2mVar)<100
                     and (not buff.PowerWordShield().up or not buff.SurrenderToMadness().up))
@@ -175,7 +176,7 @@ local InCombat = function()
             if cast.VampiricTouch('target','aoe') then return true end
         end
     -- void_eruption,if=insanity>=70|(talent.auspicious_spirits.enabled&insanity>=(65-shadowy_apparitions_in_flight*3))|set_bonus.tier19_4pc
-        if XB.Interface:GetToggle('voidEruption') and insanity >= 70 or (talent.AuspiciousSpirits.enabled and insanity >=65) or eq_t19_4pc then
+        if XB.Interface:GetToggle('voidEruption') and (insanity >= 70 or (talent.AuspiciousSpirits.enabled and insanity >=65) or eq_t19_4pc) then
             if cast.VoidEruption('player') then return true end
         end
     -- shadow_crash,if=talent.shadow_crash.enabled
@@ -269,7 +270,7 @@ local InCombat = function()
     local ActionListVF = function()
     -- surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>=25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_death.up|buff.shadowy_insight.up)target.time_to_die<=variable.s2mcheck-(buff.insanity_drain_stacks.stack)
         -- Never automatic use S2M
-    -- MutiTarVoidBolt
+    -- MultiTarVoidBolt
         if cr:UI('A_MTVB_check') then
             if debuff.ShadowWordPain().remains > cr:UI('A_MTVB_spin') and debuff.VampiricTouch().remains > cr:UI('A_MTVB_spin') then
                 for i = 1,#enemies do
@@ -473,7 +474,7 @@ local InCombat = function()
     local ActionListS2M = function()
     -- void_bolt,if=buff.insanity_drain_stacks.stack<6&set_bonus.tier19_4pc
         if eq_t19_4pc and insanityDrainStacks < 6 then
-            -- MutiTarVoidBolt
+            -- MultiTarVoidBolt
             if cr:UI('A_MTVB_check') then
                 if debuff.ShadowWordPain().remains > cr:UI('A_MTVB_spin') and debuff.VampiricTouch().remains > cr:UI('A_MTVB_spin') then
                     for i = 1,#enemies do
@@ -526,10 +527,12 @@ local InCombat = function()
         if cr:UI('C_PI_S2M_check') 
             and cd.ShadowWordDeath().charges == 0 
             and cd.ShadowWordDeath().remains > 3*gcd 
-            and insanityDrainStacks >= cr:UI('C_PI_S2M_spin') then
+            and useCD
+            and insanityDrainStacks >= cr:UI('C_PI_S2M_spin')
+        then
             if cast.PowerInfusion() then return true end
         end
-    -- MutiTarVoidBolt
+    -- MultiTarVoidBolt
         if cr:UI('A_MTVB_check') then
             if debuff.ShadowWordPain().remains > cr:UI('A_MTVB_spin') and debuff.VampiricTouch().remains > cr:UI('A_MTVB_spin') then
                 for i = 1,#enemies do
@@ -564,12 +567,18 @@ local InCombat = function()
             and game:HasEquiped(XB.EquipSet.BlessedDawnlightMedallion) 
             and currentInsanityDrain * gcd > insanity - 5 
             and buff.PowerInfusion().down
-            and insanityDrainStacks > cr:UI('C_BDM_S2M_spin') 
+            and useCD
+            and insanityDrainStacks >= cr:UI('C_BDM_S2M_spin') 
         then
             if XB.Protected.UseInvItem(2) then XB.Runer.Wait(0.15) return true end
         end
     -- dispersion,if=current_insanity_drain*gcd.max>insanity-5&!buff.power_infusion.up
-        if cr:UI('C_Dis_S2M') and currentInsanityDrain * gcd > insanity - 5 and buff.PowerInfusion().down then
+        if cr:UI('C_Dis_S2M_check') 
+            and currentInsanityDrain * gcd > insanity - 5 
+            and buff.PowerInfusion().down
+            and useCD
+            and insanityDrainStacks >= cr:UI('C_Dis_S2M_spin') 
+        then
             if cast.Dispersion() then return true end
         end
     -- mind_blast,if=active_enemies<=4
@@ -584,6 +593,7 @@ local InCombat = function()
     -- shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&active_enemies<=2))&cooldown.shadow_word_death.charges=2
         if (activeEnemies <= cr:UI('A_AE_spin') or talent.ReaperOfSouls.enabled)
             and cd.ShadowWordDeath().charges == 2
+            and insanity + (30+30*reaperOfSoulsVar)<=100
             and cr:UI('C_SWD_S2M')
         then
             if cast.ShadowWordDeath('target','aoe') then return true end
@@ -752,4 +762,4 @@ local Pause = function()
     return false
 end
 
-XB.CR:Add(258, '[XB] Priest - Shadow', InCombat, OutCombat, OnLoad, OnUnload, GUI, Pause, TargetRange)
+XB.CR:Add(258, L('Name'), InCombat, OutCombat, OnLoad, OnUnload, GUI, Pause, TargetRange)

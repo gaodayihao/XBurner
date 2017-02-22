@@ -15,7 +15,7 @@ local function BuildBuffAndDebuff()
     for name, spellID in pairs(buffs) do
         XB.Game.Buff[name] = function(target,any)
             if any == nil then any = true else any = false end
-            local target = target and target or 'player'
+            local target = target or 'player'
             local buff      = {
                 up          = false,
                 down        = true,

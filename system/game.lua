@@ -334,8 +334,8 @@ function XB.Game:GetRacial()
     return racialSpells[race]
 end
     
-XB.Globals.Game = XB.Game
--- XB.Globals.Game = { 
---     UnitID = XB.Game.UnitID,
---     IsMoving = XB.Game.IsMoving
--- }
+-- XB.Globals.Game = XB.Game
+XB.Globals.Game = { 
+    UnitID = XB.Game.UnitID,
+    IsMoving = XB.Game.IsMoving
+}
