@@ -9,9 +9,11 @@
 * :white_check_mark: - 反馈良好
 * :x: - 未可用
 * :heavy_check_mark: - 有基本的循环，但没有针对团本的优化
-* :interrobang: - 未测试
+* c - 未测试
 
 |天赋 |进度|作者|版本|状态|
 |:----|------:|:-------|:---:|:-----:|
 | **牧师** |||
-|暗影|80%(缺少S2M)|Ellis|7.15|:white_check_mark:
+|暗影|95%|Ellis|7.15|:white_check_mark:
+| **术士** |||
+|痛苦|50%|Ellis|7.15|:interrobang:
