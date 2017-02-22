@@ -342,6 +342,7 @@ local InCombat = function()
             and game:HasEquiped(XB.EquipSet.BlessedDawnlightMedallion) 
             and currentInsanityDrain * gcd > insanity - 5 
             and buff.PowerInfusion().down
+            and (not talent.SurrenderToMadness.enabled or ttd('target') > s2mcheck - insanityDrainStacks + 300)
             and insanityDrainStacks > cr:UI('C_BDM_spin') 
         then
             if XB.Protected.UseInvItem(2) then XB.Runer.Wait(0.15) return true end
@@ -574,7 +575,7 @@ local InCombat = function()
         end
     -- dispersion,if=current_insanity_drain*gcd.max>insanity-5&!buff.power_infusion.up
         if cr:UI('C_Dis_S2M_check') 
-            and currentInsanityDrain * gcd > insanity - 5 
+            and currentInsanityDrain * gcd > insanity - 15 
             and buff.PowerInfusion().down
             and useCD
             and insanityDrainStacks >= cr:UI('C_Dis_S2M_spin') 
