@@ -156,14 +156,17 @@ local ByPassTarget = {
 local SpecialUnitVerify = {
     [103679] = { func = function(theUnit) return not UnitIsFriend(theUnit,"player") end },     -- Soul Effigy
     [95887] = { func = function(theUnit)
-        return not UnitIsDeadOrGhost(theUnit) and UnitCanAttack("player",theUnit) and XB.Game:GetUnitBuff(theUnit,194323) == nil
+        return not UnitIsDeadOrGhost(theUnit) and UnitCanAttack("player",theUnit) and XB.Game:GetUnitBuffAny(theUnit,194323) == nil
     end },     -- Glazer
     [95888] = { func = function(theUnit)
-        return not UnitIsDeadOrGhost(theUnit) and UnitCanAttack("player",theUnit) and XB.Game:GetUnitBuff(theUnit,197422) == nil and XB.Game:GetUnitBuff(theUnit,205004) == nil
+        return not UnitIsDeadOrGhost(theUnit) and UnitCanAttack("player",theUnit) and XB.Game:GetUnitBuffAny(theUnit,197422) == nil and XB.Game:GetUnitBuffAny(theUnit,205004) == nil
     end },     -- Cordana Felsong
     [105906] = { func = function(theUnit)
-        return not UnitIsDeadOrGhost(theUnit) and UnitCanAttack("player",theUnit) and XB.Game:GetUnitBuff(theUnit,209915) == nil
+        return not UnitIsDeadOrGhost(theUnit) and UnitCanAttack("player",theUnit) and XB.Game:GetUnitBuffAny(theUnit,209915) == nil
     end },     -- Eye of Il'gynoth
+    [105503] = { func = function(theUnit)
+        return not UnitIsDeadOrGhost(theUnit) and UnitCanAttack("player",theUnit) and XB.Game:GetUnitBuffAny(theUnit,206516) == nil
+    end },     -- Gul'dan
 }
 
 local ShouldContinue = {
@@ -185,7 +188,7 @@ local ShouldStop = {
 
 function XB.Checker:ByPassMounts()
     for i=1, #ByPassMounts do
-        if XB.Game:GetUnitBuff('player', ByPassMounts[i]) then
+        if XB.Game:GetUnitBuffAny('player', ByPassMounts[i]) then
             return true
         end
     end
@@ -194,7 +197,7 @@ end
 
 function XB.Checker:ByPassMove()
     for i=1, #ByPassMove do
-        if XB.Game:GetUnitBuff('player', ByPassMove[i]) then
+        if XB.Game:GetUnitBuffAny('player', ByPassMove[i]) then
             return true
         end
     end
