@@ -175,6 +175,10 @@ local ShouldContinue = {
     104773,         -- Unending Resolve
 }
 
+local ForceStop = {
+    208944,           -- Time Stop
+}
+
 local ShouldStop = {
     [137457]='',         -- Piercing Roar(Oondasta)
     [138763]='',         -- Interrupting Jolt(Dark Animus)
@@ -251,6 +255,13 @@ function XB.Checker:BetterStopCasting()
                 return endTime >= bossEndTime
             end
         end
+    end
+    return false
+end
+
+function XB.Checker.ForceStop()
+    for i=1,#ForceStop do
+        if XB.Game:GetUnitDebuffAny('player',ForceStop[i]) then return true end
     end
     return false
 end

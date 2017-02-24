@@ -97,9 +97,9 @@ function XB.Runer:CastSpell(Unit,SpellID,FacingSkip,MovementSkip,SpamAllowed,Kno
                     -- get our last/current cast
                     if TimersTable[SpellID] == nil or TimersTable[SpellID] <= GetTime() -0.6 then
                         if (FacingSkip or XB.Protected.Infront("player",Unit)) and (UnitIsUnit("player",Unit) or XB.Protected.LineOfSight("player",Unit)) then
-                            if noCast then 
+                            if noCast then
                                 return true
-                            else 
+                            else
                                 TimersTable[SpellID] = GetTime()
                                 XB.Runer.LastCast = SpellID
                                 XB.Runer.LastTarget = Unit
@@ -158,9 +158,9 @@ function XB.Runer:CastGroundAtBestLocation(spellID, radius, minUnits, maxRange, 
         --Print(thisUnit.." - "..thisDistance)
         if thisDistance < maxRange and thisDistance >= minRange and hasThreat then
             --Print("distance passed")
-            if not UnitIsDeadOrGhost(thisUnit) 
-                and (XB.Protected.Infront("player",thisUnit) or UnitIsUnit(thisUnit,"player")) 
-                and XB.Protected.LineOfSight(thisUnit) 
+            if not UnitIsDeadOrGhost(thisUnit)
+                and (XB.Protected.Infront("player",thisUnit) or UnitIsUnit(thisUnit,"player"))
+                and XB.Protected.LineOfSight(thisUnit)
                 and not XB.Game:IsMoving(thisUnit)
             then
                 --Print("ghost passed")
@@ -277,8 +277,14 @@ C_Timer.NewTicker(0.1, (function()
     if WaitStart + Wait >= GetTime() then
         return
     end
-    if XB.Interface:GetToggle('mastertoggle') and not XB.CR.CRChanging and not IsAoEPending() then
-        if not UnitIsDeadOrGhost('player') and IsMountedCheck() then
+    if XB.Interface:GetToggle('mastertoggle')
+        and not XB.CR.CRChanging
+        and not XB.Checker.ForceStop()
+        and not IsAoEPending()
+    then
+        if not UnitIsDeadOrGhost('player')
+            and IsMountedCheck()
+        then
             if XB.Checker:BetterStopCasting() then
                 SpellStopCasting()
             end
