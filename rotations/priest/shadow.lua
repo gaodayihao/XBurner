@@ -341,7 +341,7 @@ local InCombat = function()
         if cr:UI('C_BDM_check') 
             and game:HasEquiped(XB.EquipSet.BlessedDawnlightMedallion) 
             and currentInsanityDrain * gcd > insanity - 5 
-            and buff.PowerInfusion().down
+            -- and buff.PowerInfusion().down
             and (not talent.SurrenderToMadness.enabled or ttd('target') > s2mcheck - insanityDrainStacks + 300)
             and insanityDrainStacks > cr:UI('C_BDM_spin') 
         then
