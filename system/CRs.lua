@@ -63,14 +63,15 @@ function XB.CR:Add(SpecID, ...)
         if ev.gui then XB.CR:AddGUI(ev.name, ev.gui) end
 
         -- store some ref to the crs
-        CRs[SpecID][ev.name] = {}
-        CRs[SpecID][ev.name].Name = ev.name
-        CRs[SpecID][ev.name].load = ev.load or noop
-        CRs[SpecID][ev.name].unload = ev.unload or noop
-        CRs[SpecID][ev.name].pause = ev.pause or (function() return false end)
-        CRs[SpecID][ev.name].range = ev.range or 5
-        CRs[SpecID][ev.name][true] = ev.ic or noop
-        CRs[SpecID][ev.name][false] = ev.ooc or noop
+        CRs[SpecID][ev.name]            = {}
+        CRs[SpecID][ev.name].Name       = ev.name
+        CRs[SpecID][ev.name].load       = ev.load or noop
+        CRs[SpecID][ev.name].unload     = ev.unload or noop
+        CRs[SpecID][ev.name].pause      = ev.pause or (function() return false end)
+        CRs[SpecID][ev.name].range      = ev.range or 5
+        CRs[SpecID][ev.name][true]      = ev.ic or noop
+        CRs[SpecID][ev.name][false]     = ev.ooc or noop
+        CRs[SpecID][ev.name].SpecID     = SpecID
     end
 end
 
@@ -110,12 +111,12 @@ function XB.CR:GetList(Spec)
     local result = {}
     local classIndex = select(3, UnitClass('player'))
     if CRs[Spec] then
-        for k in pairs(CRs[Spec]) do
-            result[#result+1] = k
+        for _,v in pairs(CRs[Spec]) do
+            result[#result+1] = v
         end
     end
-    for k in pairs(CRs[classIndex]) do
-        result[#result+1] = k
+    for _,v in pairs(CRs[classIndex]) do
+        result[#result+1] = v
     end
     return result
 end
@@ -123,8 +124,9 @@ end
 local function BuildCRs(Spec, Last)
     local CrList = XB.CR:GetList(Spec)
     for i=1, #CrList do
-        local Name = CrList[i]
-        XB.Interface:AddCR(Spec, Name, (Name == Last))
+        local Name = CrList[i].Name
+        local SpecID = CrList[i].SpecID
+        XB.Interface:AddCR(SpecID, Name, (Name == Last))
     end
 end
 
