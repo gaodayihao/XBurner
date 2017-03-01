@@ -111,13 +111,13 @@ XB.EquipSet = {
 function XB.EquipSet:TierScan(thisTier)
     local equippedItems = 0;
     local _, classEnglishName, _ = UnitClass('player')
-    local thisTier = string.upper(thisTier);
+    local thisTier = string.upper(thisTier)
     if XB.EquipSet[thisTier] and XB.EquipSet[thisTier][classEnglishName] then
         for k,v in pairs(XB.EquipSet[thisTier][classEnglishName]) do
             if GetInventoryItemID('player', k) == v then
-                equippedItems = equippedItems + 1;
+                equippedItems = equippedItems + 1
             end
         end
     end
-    return equippedItems;
+    return equippedItems
 end

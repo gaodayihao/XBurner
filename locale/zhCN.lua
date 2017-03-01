@@ -100,4 +100,12 @@ XB.Locale.zhCN = {
     CorruptionMulTar = '多目标 腐蚀术',
     SiphonLifeMulTar = '多目标 生命虹吸',
   },
+  Holy_Priest = {
+    Name = '[XB] - 牧师 - 神圣',
+    BaS = '身心合一',
+    BaS_tip = '自动使用身心合一\n\n|cffff0000参数：|r\n使用延迟',
+  },
+  Retribution = {
+    Name = '[XB] - 圣骑士 - 惩戒',
+  },
 }

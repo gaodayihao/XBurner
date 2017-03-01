@@ -155,15 +155,24 @@ local ByPassTarget = {
 
 local SpecialUnitVerify = {
     [103679] = { func = function(theUnit) return not UnitIsFriend(theUnit,"player") end },     -- Soul Effigy
+    
     [95887] = { func = function(theUnit)
         return not UnitIsDeadOrGhost(theUnit) and UnitCanAttack("player",theUnit) and XB.Game:GetUnitBuffAny(theUnit,194323) == nil
     end },     -- Glazer
     [95888] = { func = function(theUnit)
         return not UnitIsDeadOrGhost(theUnit) and UnitCanAttack("player",theUnit) and XB.Game:GetUnitBuffAny(theUnit,197422) == nil and XB.Game:GetUnitBuffAny(theUnit,205004) == nil
     end },     -- Cordana Felsong
+
     [105906] = { func = function(theUnit)
         return not UnitIsDeadOrGhost(theUnit) and UnitCanAttack("player",theUnit) and XB.Game:GetUnitBuffAny(theUnit,209915) == nil
     end },     -- Eye of Il'gynoth
+
+    [104596] = { func = function(theUnit)
+        return not UnitIsDeadOrGhost(theUnit) and UnitCanAttack("player",theUnit)
+    end },     -- Trilliax -- Scrubber
+    [109804] = { func = function(theUnit)
+        return not UnitIsDeadOrGhost(theUnit) and UnitCanAttack("player",theUnit)
+    end },     -- High Botanist Tel'arn --  Plasma Sphere
     [105503] = { func = function(theUnit)
         return not UnitIsDeadOrGhost(theUnit) and UnitCanAttack("player",theUnit) and XB.Game:GetUnitBuffAny(theUnit,206516) == nil
     end },     -- Gul'dan
@@ -218,17 +227,15 @@ end
 
 function XB.Checker:ShouldStopCasting(SpellID,isChannel)
     local isChannel = isChannel or false
+    if not isChannel and XB.Game:GetCastTime(SpellID) == 0 then return false end
     for i=1,5 do
         local boss = 'boss'..i
         if UnitExists(boss) then
-            for k=1,#ShouldContinue do
-                if XB.Game:GetUnitBuffAny('player',ShouldContinue[k]) then return false end
-            end
-            
-            if not isChannel and XB.Game:GetCastTime(SpellID) == 0 then return false end
-
             local name, _, _, _, _, endTime, _, _, _, bossSpellID = UnitCastingInfo(boss)
             if name ~= nil and ShouldStop[bossSpellID]~=nil then
+                for k=1,#ShouldContinue do
+                    if XB.Game:GetUnitBuffAny('player',ShouldContinue[k]) then return false end
+                end
                 if isChannel then
                     return (XB.Game:GCD() + GetTime())*1000 + 100 >= endTime
                 else
